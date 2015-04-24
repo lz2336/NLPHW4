@@ -1,5 +1,5 @@
 import nltk
-from nltk import comtrans
+from nltk.corpus import comtrans
 
 NUM_ITERS = 10
 
