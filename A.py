@@ -1,4 +1,5 @@
 import nltk
+import codecs
 # from nltk.corpus import comtrans
 from nltk.align import ibm1, ibm2
 
@@ -41,7 +42,7 @@ def compute_avg_aer(aligned_sents, model, n):
 def save_model_output(aligned_sents, model, file_name):
     first_twenty = aligned_sents[:20]
     
-    output_file = open(file_name, 'w')
+    output_file = codecs.open(file_name, 'wb', 'utf-8')
 
     for curr_sent in aligned_sents:
         aligned_curr_sent = model.align(curr_sent)
