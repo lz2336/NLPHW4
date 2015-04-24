@@ -3,7 +3,7 @@ import codecs
 # from nltk.corpus import comtrans
 from nltk.align import ibm1, ibm2
 
-NUM_ITERS = 30
+NUM_ITERS = 5
 
 # TODO: Initialize IBM Model 1 and return the model.
 def create_ibm1(aligned_sents):
@@ -44,8 +44,6 @@ def save_model_output(aligned_sents, model, file_name):
 
     for curr_sent in aligned_sents:
         aligned_curr_sent = model.align(curr_sent)
-
-        aligned_curr_sent.alignment = aligned_curr_sent.alignment.sorted()
 
         source = ' '.join(aligned_curr_sent.words)
         target = ' '.join(aligned_curr_sent.mots)
