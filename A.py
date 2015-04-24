@@ -3,19 +3,17 @@ import codecs
 # from nltk.corpus import comtrans
 from nltk.align import ibm1, ibm2
 
-NUM_ITERS = 15
+NUM_ITERS = 30
 
 # TODO: Initialize IBM Model 1 and return the model.
 def create_ibm1(aligned_sents):
-    num_iters = NUM_ITERS
-    m1 = ibm1.IBMModel1(aligned_sents, num_iters)
+    m1 = ibm1.IBMModel1(aligned_sents, NUM_ITERS)
 
     return m1
 
 # TODO: Initialize IBM Model 2 and return the model.
 def create_ibm2(aligned_sents):
-    num_iters = NUM_ITERS
-    m2 = ibm2.IBMModel2(aligned_sents, num_iters)
+    m2 = ibm2.IBMModel2(aligned_sents, NUM_ITERS)
 
     return m2
 
@@ -47,10 +45,12 @@ def save_model_output(aligned_sents, model, file_name):
     for curr_sent in aligned_sents:
         aligned_curr_sent = model.align(curr_sent)
 
+        aligned_curr_sent.alignment = aligned_curr_sent.alignment.sorted()
+
         source = ' '.join(aligned_curr_sent.words)
         target = ' '.join(aligned_curr_sent.mots)
         alignments = ' '.join(str(alignm) for alignm in aligned_curr_sent.alignment)
-        output = 'Source sentence\t' + source + '\nTarget sentence\t' + target + '\nAlignments\t' + alignments + '\n'
+        output = 'Source sentence\t' + source + '\nTarget sentence\t' + target + '\nAlignments\t' + alignments + '\n\n'
 
         output_file.write(output)
 
