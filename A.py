@@ -7,14 +7,15 @@ NUM_ITERS = 10
 def create_ibm1(aligned_sents):
     num_iters = NUM_ITERS
     ibm1 = IBMModel1(aligned_sents, num_iters)
-return ibm1
+
+    return ibm1
 
 # TODO: Initialize IBM Model 2 and return the model.
 def create_ibm2(aligned_sents):
     num_iters = NUM_ITERS
     ibm2 = IBMModel2(aligned_sents, num_iters)
 
-return ibm2
+    return ibm2
 
 # TODO: Compute the average AER for the first n sentences
 #       in aligned_sents using model. Return the average AER.
@@ -30,7 +31,7 @@ def compute_avg_aer(aligned_sents, model, n):
 
     avg_er = float(er) / n
 
-return avg_er
+    return avg_er
 
 
 # TODO: Computes the alignments for the first 20 sentences in
