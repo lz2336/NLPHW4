@@ -44,7 +44,7 @@ def save_model_output(aligned_sents, model, file_name):
     output_file = open(file_name, 'w')
 
     for curr_sent in aligned_sents:
-        aligned_curr_sent = model.align(sent)
+        aligned_curr_sent = model.align(curr_sent)
 
         source = ' '.join(aligned_curr_sent.words)
         target = ' '.join(aligned_curr_sent.mots)
