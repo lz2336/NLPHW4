@@ -1,19 +1,20 @@
 import nltk
-from nltk.corpus import comtrans
+# from nltk.corpus import comtrans
+from nltk.align import ibm1, ibm2
 
 NUM_ITERS = 10
 
 # TODO: Initialize IBM Model 1 and return the model.
 def create_ibm1(aligned_sents):
     num_iters = NUM_ITERS
-    ibm1 = IBMModel1(aligned_sents, num_iters)
+    ibm1 = ibm1.IBMModel1(aligned_sents, num_iters)
 
     return ibm1
 
 # TODO: Initialize IBM Model 2 and return the model.
 def create_ibm2(aligned_sents):
     num_iters = NUM_ITERS
-    ibm2 = IBMModel2(aligned_sents, num_iters)
+    ibm2 = ibm2.IBMModel2(aligned_sents, num_iters)
 
     return ibm2
 
