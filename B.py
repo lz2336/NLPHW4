@@ -18,7 +18,6 @@ class BerkeleyAligner():
         english = [None] + align_sent.mots
         l_g = len(german)
         l_e = len(english) - 1
-        print 'got here'
 
         for j in range(1, l_g):
             g_word = german[j - 1]
@@ -26,7 +25,7 @@ class BerkeleyAligner():
             print self.t[(g_word, None)]
             print self.q[(0, j, l_g, l_e)]
 
-            for i in range (0, l_e):
+            for i in range (1, l_e):
                 e_word = english[i]
                 # print (g_word, e_word)
                 # print self.t[(g_word, e_word)]
