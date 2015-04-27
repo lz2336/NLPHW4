@@ -46,7 +46,7 @@ class BerkeleyAligner():
             target_sent = [None] + target_sent
             for word in source_sent:
                 if word in target_sent:
-                    if word in counts:
+                    if word not in counts:
                         counts[word] = set(target_sent)
                     else:
                         counts[word].update(target_sent)
