@@ -116,6 +116,8 @@ class BerkeleyAligner():
                     for j in range(0, m):
                         target_word = target_sent[j]
                         print target_word
+                        print t_eg[(source_word, target_word)]
+                        print q_eg[(j, i, l, m)]
                         normalizer_eg[source_word] += t_eg[(source_word, target_word)] * q_eg[(j, i, l, m)]
 
                 for i in range(1, l):
