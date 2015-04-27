@@ -79,6 +79,7 @@ class BerkeleyAligner():
         # gsents_N =[]
         # esents_N = []
         for aligned_sent in aligned_sents:
+            print aligned_sent
             # gsents.append(aligned_sent.words)
             gsents.append(aligned_sent.words.insert(0, 'NULL'))
             # esents.append(aligned_sent.mots)
@@ -276,9 +277,7 @@ class BerkeleyAligner():
     #     return # count dictionary
 
 def main(aligned_sents):
-    print aligned_sents
     ba = BerkeleyAligner(aligned_sents, 20)
-
     A.save_model_output(aligned_sents, ba, "ba.txt")
     avg_aer = A.compute_avg_aer(aligned_sents, ba, 50)
 
