@@ -40,20 +40,17 @@ class BerkeleyAligner():
     def initialize(self, target_sents, source_sents):
         q = defaultdict(float)
         t = defaultdict(float)
-        counts = {}
+        counts = defaultdict{set}
 
         for (target_sent, source_sent) in zip(target_sents, source_sents):
             target_sent = [None] + target_sent
-            for word in source_sent:
-                if word in target_sent:
-                    if word not in counts:
-                        counts[word] = set(target_sent)
-                    else:
-                        counts[word].update(target_sent)
+            for src_word in source_sent:
+                counts[src_word].update(target_sent)
 
-                    for word, target_words in counts.iteritems():
-                        for target_word in target_words:
-                            t[(word, target_word)] = 1.0 / len(target_words)
+        for word in counts.keys():
+            tar_words = counts[word]
+            for tar_word in tar_words:
+                t[(word, tar_word)] = 1.0 / len(tar_words)
 
         # Initialize q. l: length of source sent; m: length of target sent
         for target_sent, source_sent in zip(target_sents, source_sents):  
@@ -106,10 +103,6 @@ class BerkeleyAligner():
 
         (t_eg,q_eg) = self.initialize(gsents, esents)
         (t_ge,q_ge) = self.initialize(esents, gsents)
-        print t_eg
-        print t_ge
-        sys.exit(1)
-
 
         for s in range(0, num_iters):
             c_eg = defaultdict(float)
