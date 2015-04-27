@@ -65,7 +65,7 @@ class BerkeleyAligner():
             possible_translations = set(possible_translations)
             count = len(possible_translations)
             for possible_translation in possible_translations:
-                t[(word, possible_translation)] = 1 / count
+                t[(word, possible_translation)] = 1.0 / count
 
         return (t,q)
 
