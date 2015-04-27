@@ -114,7 +114,8 @@ class BerkeleyAligner():
             normalizer_e = defaultdict(float)
             c_ge = defaultdict(float)
             normalizer_g = defaultdict(float)
-            c_out = defaultdict(float)
+            c_avg_numr = defaultdict(float)
+            c_avg_denm = defaultdict(float)
 
             #Calculate counts for e2g:
             for k in range(0, len(esents)):
@@ -156,8 +157,10 @@ class BerkeleyAligner():
                         c_eg[(i, j, l_e, l_g)] += delta
                         c_eg[(j, l_e, l_g)] += delta
 
-                        c_out[(g_word, e_word)] += delta / 2 if i != 0 else 0
-                        c_out[(j, i, l_g, l_e)] += delta / 2 if i != 0 else 0
+                        c_avg_numr[(g_word, e_word)] += delta / 2 if i != 0 else 0
+                        c_avg_denm[(g_word, e_word)] += delta / 2 if i != 0 else 0
+                        c_avg_numr[(j, i, l_g, l_e)] += delta / 2 if i != 0 else 0
+                        c_avg_denm[(i, l_g, l_e)] += delta / 2 if i != 0 else 0
 
                 # Counts for ge
                 for j in range(1, l_g + 1):
@@ -170,10 +173,10 @@ class BerkeleyAligner():
                         c_ge[(i, j, l_g, l_e)] += delta
                         c_ge[(j, l_g, l_e)] += delta
 
-                        c_out[(g_word, e_word)] += delta / 2 if i != 0 else delta
-                        c_out[e_word] += delta
-                        c_out[(i, j, l_g, l_e)] += delta / 2 if i != 0 else delta
-                        c_out[(j, l_g, l_e)] += delta
+                        c_avg_numr[(g_word, e_word)] += delta / 2 if i != 0 else delta
+                        c_avg_denm[(g_word, e_word)] += delta / 2 if i != 0 else delta
+                        c_avg_numr[(i, j, l_g, l_e)] += delta / 2 if i != 0 else delta
+                        c_avg_denm[(j, l_g, l_e)] += delta / 2 if i != 0 else delta
 
 
             # Update t_eg, q_eg values
@@ -215,8 +218,8 @@ class BerkeleyAligner():
                 for j in range(1, l_g + 1):
                     g_word = g_sent[j - 1]
                     
-                    t[(g_word, e_word)] = c_out[(g_word, e_word)] / c_out[e_word]
-                    q[(i, j, l_g, l_e)] = c_out[(i, j, l_g, l_e)] / c_out[(j, l_g, l_e)]
+                    t[(g_word, e_word)] = c_avg_numr[(g_word, e_word)] / c_avg_denm[(g_word, e_word)]
+                    q[(i, j, l_g, l_e)] = c_avg_numr[(i, j, l_g, l_e)] / c_avg_denm[(j, l_g, l_e)]
                     
 
         # # Calculate counts for g2e:
