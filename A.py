@@ -3,7 +3,7 @@ import codecs
 # from nltk.corpus import comtrans
 from nltk.align import ibm1, ibm2
 
-NUM_ITERS = 3
+NUM_ITERS = 4
 
 # TODO: Initialize IBM Model 1 and return the model.
 def create_ibm1(aligned_sents):
