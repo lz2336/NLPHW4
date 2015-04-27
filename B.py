@@ -125,7 +125,6 @@ class BerkeleyAligner():
                     for j in range(0, m):
                         target_word = target_sent[j]
                         delta = t_eg[(source_word, target_word)] * q_eg[(j, i, l, m)] / normalizer_eg[source_word]
-                        print delta
                         c_t_eg[(source_word, target_word)] += delta
                         c_t_eg[source_word] += delta
                         c_q_eg[(j, i, l, m)] += delta
@@ -167,20 +166,20 @@ class BerkeleyAligner():
                     for i in range(0, l):
                         source_word = source_sent[j]
                         if i * j != 0:
-                            q_eg[(j, i, l, m)] = (c_q_eg[(j, i, l, m)] + c_q_ge[(i, j, m, l)]) / (c_q_eg[(i, l, m)] + c_q_ge[(j, m, l)])
-                            t_eg[(source_word, target_word)] = (c_t_eg[(source_word, target_word)] + c_t_ge[(target_word, source_word)]) / (c_t_eg[source_word] + c_t_ge[target_word])
-                            q_ge[(i, j, m, l)] = (c_q_eg[(j, i, l, m)] + c_q_ge[(i, j, m, l)]) / (c_q_eg[(i, l, m)] + c_q_ge[(j, m, l)])
-                            t_ge[(target_word, source_word)] = (c_t_eg[(source_word, target_word)] + c_t_ge[(target_word, source_word)]) / (c_t_eg[source_word] + c_t_ge[target_word])
+                            q_ge[(j, i, l, m)] = (c_q_ge[(j, i, l, m)] + c_q_eg[(i, j, m, l)]) / (c_q_ge[(i, l, m)] + c_q_eg[(j, m, l)])
+                            t_ge[(source_word, target_word)] = (c_t_ge[(source_word, target_word)] + c_t_eg[(target_word, source_word)]) / (c_t_ge[source_word] + c_t_eg[target_word])
+                            q_eg[(i, j, m, l)] = (c_q_ge[(j, i, l, m)] + c_q_eg[(i, j, m, l)]) / (c_q_ge[(i, l, m)] + c_q_eg[(j, m, l)])
+                            t_eg[(target_word, source_word)] = (c_t_ge[(source_word, target_word)] + c_t_eg[(target_word, source_word)]) / (c_t_ge[source_word] + c_t_eg[target_word])
                         elif i == 0 and j != 0:
-                            q_eg[(j, i, l, m)] = c_q_eg[(j, i, l, m)] / c_q_eg[(i, l, m)]
-                            t_eg[(source_word, target_word)] = c_t_eg[(source_word, target_word)] / c_t_eg[source_word]
-                            q_ge[(i, j, m, l)] = (c_q_eg[(j, i, l, m)] + c_q_ge[(i, j, m, l)]) / (c_q_eg[(i, l, m)] + c_q_ge[(j, m, l)])
-                            t_ge[(target_word, source_word)] = (c_t_eg[(source_word, target_word)] + c_t_ge[(target_word, source_word)]) / (c_t_eg[source_word] + c_t_ge[target_word])
+                            q_ge[(j, i, l, m)] = c_q_ge[(j, i, l, m)] / c_q_ge[(i, l, m)]
+                            t_ge[(source_word, target_word)] = c_t_ge[(source_word, target_word)] / c_t_ge[source_word]
+                            q_eg[(i, j, m, l)] = (c_q_ge[(j, i, l, m)] + c_q_eg[(i, j, m, l)]) / (c_q_ge[(i, l, m)] + c_q_eg[(j, m, l)])
+                            t_eg[(target_word, source_word)] = (c_t_ge[(source_word, target_word)] + c_t_eg[(target_word, source_word)]) / (c_t_ge[source_word] + c_t_eg[target_word])
                         elif i != 0 and j == 0:
-                            q_eg[(j, i, l, m)] = (c_q_eg[(j, i, l, m)] + c_q_ge[(i, j, m, l)]) / (c_q_eg[(i, l, m)] + c_q_ge[(j, m, l)])
-                            t_eg[(source_word, target_word)] = (c_t_eg[(source_word, target_word)] + c_t_ge[(target_word, source_word)]) / (c_t_eg[source_word] + c_t_ge[target_word])
-                            q_ge[(i, j, m, l)] = c_q_ge[(i, j, m, l)] / c_q_ge[(j, m, l)]
-                            t_ge[(target_word, source_word)] = c_t_ge[(target_word, source_word)] / c_t_ge[target_word]
+                            q_ge[(j, i, l, m)] = (c_q_ge[(j, i, l, m)] + c_q_eg[(i, j, m, l)]) / (c_q_ge[(i, l, m)] + c_q_eg[(j, m, l)])
+                            t_ge[(source_word, target_word)] = (c_t_ge[(source_word, target_word)] + c_t_eg[(target_word, source_word)]) / (c_t_ge[source_word] + c_t_eg[target_word])
+                            q_eg[(i, j, m, l)] = c_q_eg[(i, j, m, l)] / c_q_eg[(j, m, l)]
+                            t_eg[(target_word, source_word)] = c_t_eg[(target_word, source_word)] / c_t_eg[target_word]
                         else:
                             pass
         return (t_ge, q_ge)
