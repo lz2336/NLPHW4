@@ -105,9 +105,6 @@ class BerkeleyAligner():
 
         (t_eg,q_eg) = self.initialize(gsents, esents)
         (t_ge,q_ge) = self.initialize(esents, gsents)
-        print t_eg
-        print t_ge
-        sys.exit(1)
 
         # print t_eg
         # print q_eg
@@ -219,6 +216,7 @@ class BerkeleyAligner():
                     t[(g, e)] = (c_eg[(e, g)] + c_ge[(g, e)]) / (c_eg[g] + c_ge[e])
                 else:
                     t[(g, e)] = t_ge[(g, e)]
+        print t
 
         # Average q values
         q = {}
