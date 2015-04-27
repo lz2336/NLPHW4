@@ -131,17 +131,17 @@ class BerkeleyAligner():
                         # print target_word
                         # print t_eg[(source_word, target_word)]
                         # print q_eg[(j, i, l, m)]
-                        normalizer[source_word] += t_eg[(source_word, target_word)] * q_eg[(j, i, l-1, m-1)]
+                        normalizer[source_word] += t_eg[(source_word, target_word)] * q_eg[(j, i, l, m)]
 
                 for i in range(1, l):
                     source_word = source_sent[i]
                     for j in range(0, m):
                         target_word = target_sent[j]
-                        delta = t_eg[(source_word, target_word)] * q_eg[(j, i, l-1, m-1)] / normalizer[source_word]
+                        delta = t_eg[(source_word, target_word)] * q_eg[(j, i, l, m)] / normalizer[source_word]
                         c_eg[(source_word, target_word)] += delta
                         c_eg[source_word] += delta
-                        c_eg[(j, i, l-1, m-1)] += delta
-                        c_eg[(i, l-1, m-1)] += delta
+                        c_eg[(j, i, l, m)] += delta
+                        c_eg[(i, l, m)] += delta
 
         for s in range(0, num_iters):
             # Calculate counts for g2e:
