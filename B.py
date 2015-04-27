@@ -85,7 +85,6 @@ class BerkeleyAligner():
         # gsents_N =[]
         # esents_N = []
         for aligned_sent in aligned_sents:
-            print aligned_sent
             # gsent = [None] + aligned_sent.words
             # esent = [None] + aligned_sent.mots
             # gsents.append(aligned_sent.words)
@@ -94,6 +93,8 @@ class BerkeleyAligner():
             esents.append(aligned_sent.mots)
             g_vocab.update(aligned_sent.words)
             e_vocab.update(aligned_sent.mots)
+            print g_vocab
+            print e_vocab
 
         # Initialize t_eg, q_eg, t_ge, q_ge
         # Only t_eg and q_eg are returned
