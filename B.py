@@ -23,7 +23,7 @@ class BerkeleyAligner():
             g_word = german[j]
             p_max = (self.t[(g_word, None)] * self.q[(0, j + 1, l_g, l_e)], None)
             print self.t[(g_word, None)]
-            print self.q[(0, j, l_g, l_e)]
+            print self.q[(0, j+1, l_g, l_e)]
 
             for i in range (0, l_e):
                 e_word = english[i]
