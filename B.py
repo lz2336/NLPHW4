@@ -55,7 +55,7 @@ class BerkeleyAligner():
         
         for word, target_words in counts.iteritems():
             for target_word in target_words:
-                t[(word, target_word)] = 1 / len(target_words)
+                t[(word, target_word)] = 1.0 / len(target_words)
             
         # Initialize q. l: length of source sent; m: length of target sent
         for target_sent, source_sent in zip(target_sents, source_sents):  
