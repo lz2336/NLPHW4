@@ -204,8 +204,9 @@ class BerkeleyAligner():
         # Average between 2 models
         # Average t values
         t = {}
+        e_vocab.add(None)
         for g in g_vocab:
-            for e in e_vocab.add[None]:
+            for e in e_vocab:
                 if (e, g) in t_eg:
                     t[(g, e)] = (c_eg[(e, g)] + c_ge[(g, e)]) / (c_eg[g] + c_ge[e])
                 else:
