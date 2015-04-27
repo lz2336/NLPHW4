@@ -165,8 +165,8 @@ class BerkeleyAligner():
                     target_word = target_sent[j]
                     for i in range(0, l):
                         source_word = source_sent[i]
-                        print source_word
-                        print target_word
+                        # print source_word
+                        # print target_word
                         if i * j != 0:
                             q_ge[(j, i, l, m)] = (c_q_ge[(j, i, l, m)] + c_q_eg[(i, j, m, l)]) / (c_q_ge[(i, l, m)] + c_q_eg[(j, m, l)])
                             t_ge[(source_word, target_word)] = (c_t_ge[(source_word, target_word)] + c_t_eg[(target_word, source_word)]) / (c_t_ge[source_word] + c_t_eg[target_word])
