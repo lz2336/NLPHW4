@@ -198,9 +198,7 @@ class BerkeleyAligner():
                 l_e = len(e_sent) - 1
 
                 for i in range(0, l_e + 1):
-                    e_word = e_sent[i]
                     for j in range(1, l_g + 1):
-                        g_word = g_sent[j]
                         q_ge[(i, j, l_g, l_e)] = c_ge[(i, j, l_g, l_e)] / c_ge[(j, l_g, l_e)]
 
         # Average between 2 models
