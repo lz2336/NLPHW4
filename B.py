@@ -12,6 +12,8 @@ class BerkeleyAligner():
     # TODO: Computes the alignments for align_sent, using this model's parameters. Return
     #       an AlignedSent object, with the sentence pair and the alignments computed.
     def align(self, align_sent):
+        print self.t
+        print self.q
         alignments = []
         german = align_sent.words
         english = align_sent.mots
