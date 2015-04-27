@@ -22,8 +22,9 @@ class BerkeleyAligner():
 
         for j, g_word in enumerate(german):
             p_max = (self.t[(g_word, None)] * self.q[(0, j + 1, l_g, l_e)], None)
-            print p_max[0]
             for i, e_word in enumerate(english):
+                print p_max[0]
+                print self.t[(g_word, e_word)] * self.q[(i + 1, j + 1, l_g, l_e)]
                 p_max = max(p_max, (self.t[(g_word, e_word)] * self.q[(i + 1, j + 1, l_g, l_e)], i))
 
                 if p_max[1] is not None:
@@ -351,7 +352,7 @@ class BerkeleyAligner():
 def main(aligned_sents):
     ba = BerkeleyAligner(aligned_sents, 20)
     A.save_model_output(aligned_sents, ba, "ba.txt")
-    avg_aer = A.compute_avg_aer(aligned_sents, ba, 50)
+    avg_aer = A.compute_avg_aer(aligned_sents, ba, 2)
 
     print ('Berkeley Aligner')
     print ('---------------------------')
