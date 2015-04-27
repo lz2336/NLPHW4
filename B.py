@@ -156,8 +156,8 @@ class BerkeleyAligner():
 
             # Calculate updated t and q
             for (g_sent, e_sent) in zip(gsents, esents):
-                source_sent = e_sent
-                target_sent = g_sent
+                source_sent = g_sent
+                target_sent = e_sent
                 l = len(source_sent)
                 m = len(target_sent)
 
@@ -170,12 +170,12 @@ class BerkeleyAligner():
                             t_eg[(source_word, target_word)] = (c_t_eg[(source_word, target_word)] + c_t_ge[(target_word, source_word)]) / (c_t_eg[source_word] + c_t_ge[target_word])
                             q_ge[(i, j, m, l)] = (c_q_eg[(j, i, l, m)] + c_q_ge[(i, j, m, l)]) / (c_q_eg[(i, l, m)] + c_q_ge[(j, m, l)])
                             t_ge[(target_word, source_word)] = (c_t_eg[(source_word, target_word)] + c_t_ge[(target_word, source_word)]) / (c_t_eg[source_word] + c_t_ge[target_word])
-                        elif i != 0 and j == 0:
+                        elif i == 0 and j != 0:
                             q_eg[(j, i, l, m)] = c_q_eg[(j, i, l, m)] / c_q_eg[(i, l, m)]
                             t_eg[(source_word, target_word)] = c_t_eg[(source_word, target_word)] / c_t_eg[source_word]
                             q_ge[(i, j, m, l)] = (c_q_eg[(j, i, l, m)] + c_q_ge[(i, j, m, l)]) / (c_q_eg[(i, l, m)] + c_q_ge[(j, m, l)])
                             t_ge[(target_word, source_word)] = (c_t_eg[(source_word, target_word)] + c_t_ge[(target_word, source_word)]) / (c_t_eg[source_word] + c_t_ge[target_word])
-                        elif i == 0 and j != 0:
+                        elif i != 0 and j == 0:
                             q_eg[(j, i, l, m)] = (c_q_eg[(j, i, l, m)] + c_q_ge[(i, j, m, l)]) / (c_q_eg[(i, l, m)] + c_q_ge[(j, m, l)])
                             t_eg[(source_word, target_word)] = (c_t_eg[(source_word, target_word)] + c_t_ge[(target_word, source_word)]) / (c_t_eg[source_word] + c_t_ge[target_word])
                             q_ge[(i, j, m, l)] = c_q_ge[(i, j, m, l)] / c_q_ge[(j, m, l)]
