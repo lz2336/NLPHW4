@@ -139,9 +139,11 @@ class BerkeleyAligner():
                         c_eg[(j, l_e, l_g)] += delta
 
             #Update t_eg values
+            g_vocab.add(None)
             for e in e_vocab:
-                for g in g_vocab.add(None):
+                for g in g_vocab:
                     t_eg[(e, g)] = c_eg[(e, g)] / c_eg[g]
+            g_vocab.remove(None)
 
             # Update q_eg values
             for (g_sent, e_sent) in zip(gsents, esents):
@@ -183,9 +185,11 @@ class BerkeleyAligner():
                         c_ge[(j, l_g, l_e)] += delta
 
             # Update t_ge values
+            e_vocab.add(None)
             for g in g_vocab:
-                for e in e_vocab.add(None):
+                for e in e_vocab:
                     t_ge[(g, e)] = c_ge[(g, e)] / c_ge[e]
+            e_vocab.remove(None)
 
             #Update q_ge values
             for (g_sent, e_sent) in zip(gsents, esents):
@@ -245,7 +249,7 @@ class BerkeleyAligner():
                         #     t_eg[(target_word, source_word)] = c_eg[(target_word, source_word)] / c_eg[target_word]
                         # else:
                         #     pass
-                        return (t, q)
+        return (t, q)
 
 
     # def calculate_delta(i, j, souw, tarw, t, q):
