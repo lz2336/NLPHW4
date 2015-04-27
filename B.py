@@ -167,7 +167,7 @@ class BerkeleyAligner():
 
                 # Compute normalizer
                 for j in range(1, l_g + 1):
-                    g_word = g_sent[j]
+                    g_word = g_sent[j - 1]
                     normalizer[g_word] = 0
                     for i in range(0, l_e + 1):
                         e_word = e_sent[i]
@@ -175,7 +175,7 @@ class BerkeleyAligner():
 
                 # Counts
                 for j in range(1, l_g + 1):
-                    g_word = g_sent[j]
+                    g_word = g_sent[j - 1]
                     for i in range(0, l_e + 1):
                         e_word = e_sent[i]
                         delta = t_ge[(g_word, e_word)] * q_ge[(i, j, l_g, l_e)] / normalizer[g_word]
