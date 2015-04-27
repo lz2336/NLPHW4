@@ -26,8 +26,13 @@ class BerkeleyAligner():
         for j in range(1, l_g + 1):
             g_word = german[j - 1]
             p_max = (self.t[(g_word, None)] * self.q[(0, j, l_g, l_e)], None)
+            print p_max[0]
             for i in range (1, l_e + 1):
                 e_word = english[i]
+                print (g_word, e_word)
+                print self.t[(g_word, e_word)]
+                print (i, j, l_g, l_e)
+                print self.q[(i, j, l_g, l_e)]
                 p_max = max(p_max, (self.t[(g_word, e_word)] * self.q[(i, j, l_g, l_e)], i))
 
             if p_max[1] is not None:
