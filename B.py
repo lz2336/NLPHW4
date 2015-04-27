@@ -48,7 +48,7 @@ class BerkeleyAligner():
 
         for (target_sent, source_sent) in zip(target_sents, source_sents):
             for word in source_sent[1:]:
-                if word in target_sent:
+                if word not in target_sent:
                     counts[word] = set(target_sent[1:])
                 else:
                     counts[word].update(target_sent[1:])
@@ -62,7 +62,7 @@ class BerkeleyAligner():
             l = len(source_sent)
             m = len(target_sent)
             init_prob = 1.0 / (m - 1)
-            
+
             for target_idx in range(1, m):
                 for source_idx in range(1, l): # skipping 'NULL' in source_sent
                     q[(target_idx, source_idx, l, m)] = init_prob
