@@ -13,18 +13,22 @@ class BerkeleyAligner():
     # TODO: Computes the alignments for align_sent, using this model's parameters. Return
     #       an AlignedSent object, with the sentence pair and the alignments computed.
     def align(self, align_sent):
-        print self.t
-        print self.q
+        # print self.t
+        # print self.q
         alignments = []
         german = align_sent.words
-        english = align_sent.mots
+        english = [None] + align_sent.mots
         l_g = len(german)
-        l_e = len(english)
+        l_e = len(english) - 1
 
-        for j, g_word in enumerate(german):
-            p_max = (self.t[(g_word, None)] * self.q[(0, j + 1, l_g, l_e)], None)
-            for i, e_word in enumerate(english):
-                p_max = max(p_max, (self.t[(g_word, e_word)] * self.q[(i + 1, j + 1, l_g, l_e)], i))
+        p_max = 0.0
+
+        for j in range(1, l_g + 1):
+            g_word = g_sent[j - 1]
+            p_max = (self.t[(g_word, None)] * self.q[(0, j, l_g, l_e)], None)
+            for i in range (1, l_e + 1):
+                e_word = e_sent[i]
+                p_max = max(p_max, (self.t[(g_word, e_word)] * self.q[(i, j, l_g, l_e)], i))
 
             if p_max[1] is not None:
                 alignments.append((j, p_max[1]))
