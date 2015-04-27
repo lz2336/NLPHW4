@@ -136,9 +136,6 @@ class BerkeleyAligner():
                         c_eg[g_word] += delta
                         c_eg[(i, j, l_e, l_g)] += delta
                         c_eg[(j, l_e, l_g)] += delta
-                print c_eg
-
-                sys.exit(1)
 
             #Update t_eg values
             g_vocab.add(None)
@@ -186,6 +183,8 @@ class BerkeleyAligner():
                         c_ge[(i, j, l_g, l_e)] += delta
                         c_ge[(j, l_g, l_e)] += delta
 
+            print c_ge
+            sys.exit(1)
             # Update t_ge values
             e_vocab.add(None)
             for g in g_vocab:
