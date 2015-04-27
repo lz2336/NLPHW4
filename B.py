@@ -147,7 +147,7 @@ class BerkeleyAligner():
                     g_word = g_sent[i]
                     for j in range(1, l_e + 1):
                         e_word = e_sent[j - 1]
-                        t_eg[(e_word, g_word)] = c_eg[(e_word, g_word)] / c_ge[g_word]
+                        t_eg[(e_word, g_word)] = c_eg[(e_word, g_word)] / c_eg[g_word]
                         q_eg[(i, j, l_e, l_g)] = c_eg[(i, j, l_e, l_g)] / c_eg[(j, l_e, l_g)]
 
         # Calculate counts for g2e:
