@@ -276,8 +276,9 @@ class BerkeleyAligner():
     #     return # count dictionary
 
 def main(aligned_sents):
-    ba = BerkeleyAligner(aligned_sents, 20)
     print aligned_sents
+    ba = BerkeleyAligner(aligned_sents, 20)
+
     A.save_model_output(aligned_sents, ba, "ba.txt")
     avg_aer = A.compute_avg_aer(aligned_sents, ba, 50)
 
