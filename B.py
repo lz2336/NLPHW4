@@ -12,8 +12,8 @@ class BerkeleyAligner():
     #       an AlignedSent object, with the sentence pair and the alignments computed.
     def align(self, align_sent):
         alignments = []
-        german = [None] + aligned_sent.words
-        english = [None] + aligned_sent.mots
+        german = [None] + align_sent.words
+        english = [None] + align_sent.mots
         l = len(german)
         m = len(english)
         p_max = 0
@@ -30,7 +30,7 @@ class BerkeleyAligner():
 
             alignments.append((j, max_i))
 
-        return AlignedSent(aligned_sent.words, aligned_sent.mots, alignments)
+        return AlignedSent(align_sent.words, align_sent.mots, alignments)
 
     
     # TODO: Implement the EM algorithm. num_iters is the number of iterations. Returns the 
