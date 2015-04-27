@@ -77,7 +77,7 @@ class BerkeleyAligner():
         return (t,q)
 
 
-        def train(self, aligned_sents, num_iters):
+    def train(self, aligned_sents, num_iters):
             gsents = []
             esents = []
             g_vocab = set()
