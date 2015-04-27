@@ -15,23 +15,23 @@ class BerkeleyAligner():
     def align(self, align_sent):
         alignments = []
         german = align_sent.words
-        english = [None] + align_sent.mots
+        english = align_sent.mots
         l_g = len(german)
-        l_e = len(english) - 1
+        l_e = len(english)
 
-        for j in range(1, l_g):
-            g_word = german[j - 1]
-            p_max = (self.t[(g_word, None)] * self.q[(0, j, l_g, l_e)], None)
+        for j in range(0, l_g):
+            g_word = german[j]
+            p_max = (self.t[(g_word, None)] * self.q[(0, j + 1, l_g, l_e)], None)
             print self.t[(g_word, None)]
             print self.q[(0, j, l_g, l_e)]
 
-            for i in range (1, l_e):
+            for i in range (0, l_e):
                 e_word = english[i]
                 # print (g_word, e_word)
                 # print self.t[(g_word, e_word)]
                 # print (i, j, l_g, l_e)
                 # print self.q[(i, j, l_g, l_e)]
-                p_max = max(p_max, (self.t[(g_word, e_word)] * self.q[(i, j, l_g, l_e)], i))
+                p_max = max(p_max, (self.t[(g_word, e_word)] * self.q[(i + 1, j + 1, l_g, l_e)], i))
 
             if p_max[1] is not None:
                 alignments.append((j, p_max[1]))
