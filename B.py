@@ -131,7 +131,6 @@ class BerkeleyAligner():
                     e_word = e_sent[j - 1]
                     for i in range(0, l_g + 1):
                         g_word = g_sent[i]
-                        print g_word
                         delta = t_eg[(e_word, g_word)] * q_eg[(i, j, l_e, l_g)] / normalizer[e_word]
                         c_eg[(e_word, g_word)] += delta
                         c_eg[g_word] += delta
@@ -142,7 +141,7 @@ class BerkeleyAligner():
             g_vocab.add(None)
             for e in e_vocab:
                 for g in g_vocab:
-                    # print (g, c_eg[g])
+                    print (g, c_eg[g])
                     t_eg[(e, g)] = c_eg[(e, g)] / c_eg[g]
             g_vocab.remove(None)
 
