@@ -3,6 +3,7 @@ import A
 from collections import defaultdict
 from nltk.align import Alignment, AlignedSent
 import itertools
+import sys
 
 class BerkeleyAligner():
 
@@ -104,6 +105,9 @@ class BerkeleyAligner():
 
         (t_eg,q_eg) = self.initialize(gsents, esents)
         (t_ge,q_ge) = self.initialize(esents, gsents)
+        print t_eg
+        print t_ge
+        sys.exit(1)
 
         # print t_eg
         # print q_eg
