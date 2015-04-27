@@ -24,12 +24,10 @@ class BerkeleyAligner():
         for j, g_word in enumerate(german):
             p_max = (self.t[(g_word, None)] * self.q[(0, j + 1, l_g, l_e)], None)
             for i, e_word in enumerate(english):
-                print p_max[0]
-                print self.t[(g_word, e_word)] * self.q[(i + 1, j + 1, l_g, l_e)]
                 p_max = max(p_max, (self.t[(g_word, e_word)] * self.q[(i + 1, j + 1, l_g, l_e)], i))
 
-                if p_max[1] is not None:
-                    alignments.append((j, p_max[1]))
+            if p_max[1] is not None:
+                alignments.append((j, p_max[1]))
 
         return AlignedSent(german, english, alignments)
 
