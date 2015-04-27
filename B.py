@@ -226,7 +226,7 @@ class BerkeleyAligner():
                         q[(i, j, l_g, l_e)] = (c_eg[(j, i, l_e, l_g)] + c_ge[(i, j, l_g, l_e)]) / (c_eg[(i, l_e, l_g)] + c_ge[(j, l_g, l_e)])
                     else:
                         t[(g_word, e_word)] = t_ge[(g_word, e_word)] / 2
-                        q[(i, j, l_g, l_e)] = q_ge[(i, j, l_g, l_e)]
+                        q[(i, j, l_g, l_e)] = q_ge[(i, j, l_g, l_e)] / 2
 
                         # print source_word
                         # print target_word
