@@ -104,8 +104,8 @@ class BerkeleyAligner():
         # print q_eg
 
         for s in range(0, num_iters):
-           c_eg = defaultdict(float)
-           normalizer = defaultdict(float)
+            c_eg = defaultdict(float)
+            normalizer = defaultdict(float)
 
             #Calculate counts for e2g:
             for k in range(0, len(esents)):
