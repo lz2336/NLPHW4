@@ -45,8 +45,6 @@ class BerkeleyAligner():
         print source_sents
 
         for (target_sent, source_sent) in zip(target_sents, source_sents):
-            print target_sent
-            print source_sent
             all_source_words += source_sent[1:] # removing None
             
             # Initialize q. l: length of source sent; m: length of target sent
@@ -83,8 +81,6 @@ class BerkeleyAligner():
         for aligned_sent in aligned_sents:
             gsent = [None] + aligned_sent.words
             esent = [None] + aligned_sent.mots
-            print gsent
-            print esent
             # gsents.append(aligned_sent.words)
             gsents.append(gsent)
             # esents.append(aligned_sent.mots)
@@ -115,9 +111,11 @@ class BerkeleyAligner():
 
                 for i in range(1, l):
                     source_word = source_sent[i]
+                    print source_word
                     normalizer_eg[source_word] = 0
                     for j in range(0, m):
                         target_word = target_sent[j]
+                        print target_word
                         normalizer_eg[source_word] += t_eg[(source_word, target_word)] * q_eg[(j, i, l, m)]
 
                 for i in range(1, l):
