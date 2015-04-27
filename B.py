@@ -78,10 +78,10 @@ class BerkeleyAligner():
 
 
     def train(self, aligned_sents, num_iters):
-            gsents = []
-            esents = []
-            g_vocab = set()
-            e_vocab = set()
+        gsents = []
+        esents = []
+        g_vocab = set()
+        e_vocab = set()
         # gsents_N =[]
         # esents_N = []
         for aligned_sent in aligned_sents:
