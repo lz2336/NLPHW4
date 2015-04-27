@@ -10,8 +10,8 @@ class BerkeleyAligner():
     #       an AlignedSent object, with the sentence pair and the alignments computed.
     def align(self, align_sent):
         alignments = []
-        german = aligned_sent.words.insert(0, 'NULL')
-        english = aligned_sent.mots.insert(0, 'NULL')
+        german = [None] + aligned_sent.words
+        english = [None] + aligned_sent.mots
         l = len(german)
         m = len(english)
         p_max = 0
@@ -45,7 +45,7 @@ class BerkeleyAligner():
         for (target_sent, source_sent) in zip(target_sents, source_sents):
             print target_sent
             print source_sent
-            all_source_words += source_sent.remove('NULL')
+            all_source_words += source_sent[1:] # removing None
             
             # Initialize q. l: length of source sent; m: length of target sent
             l = len(source_sent)
@@ -79,8 +79,8 @@ class BerkeleyAligner():
         # gsents_N =[]
         # esents_N = []
         for aligned_sent in aligned_sents:
-            gsent = ['NULL'] + aligned_sent.words
-            esent = ['NULL'] + aligned_sent.mots
+            gsent = [None] + aligned_sent.words
+            esent = [None] + aligned_sent.mots
             print gsent
             print esent
             # gsents.append(aligned_sent.words)
