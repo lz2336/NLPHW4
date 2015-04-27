@@ -104,10 +104,6 @@ class BerkeleyAligner():
         (t_eg,q_eg) = self.initialize(gsents, esents)
         (t_ge,q_ge) = self.initialize(esents, gsents)
 
-        print t_eg
-        print t_ge
-        sys.exit(1)
-        
         for s in range(0, num_iters):
             c_eg = defaultdict(float)
             normalizer = defaultdict(float)
@@ -140,12 +136,14 @@ class BerkeleyAligner():
                         c_eg[g_word] += delta
                         c_eg[(i, j, l_e, l_g)] += delta
                         c_eg[(j, l_e, l_g)] += delta
+                print c_eg
+
+                sys.exit(1)
 
             #Update t_eg values
             g_vocab.add(None)
             for e in e_vocab:
                 for g in g_vocab:
-                    # print (g, c_eg[g])
                     t_eg[(e, g)] = c_eg[(e, g)] / c_eg[g]
             g_vocab.remove(None)
 
