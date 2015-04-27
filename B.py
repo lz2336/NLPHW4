@@ -40,7 +40,7 @@ class BerkeleyAligner():
     def initialize(self, target_sents, source_sents):
         q = defaultdict(float)
         t = defaultdict(float)
-        counts = defaultdict{set}
+        counts = defaultdict(set)
 
         for (target_sent, source_sent) in zip(target_sents, source_sents):
             target_sent = [None] + target_sent
