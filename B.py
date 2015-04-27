@@ -85,6 +85,7 @@ class BerkeleyAligner():
         # gsents_N =[]
         # esents_N = []
         for aligned_sent in aligned_sents:
+            print aligned_sent
             # gsent = [None] + aligned_sent.words
             # esent = [None] + aligned_sent.mots
             # gsents.append(aligned_sent.words)
