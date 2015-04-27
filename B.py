@@ -39,6 +39,9 @@ class BerkeleyAligner():
         q = {}
         t = {}
 
+        print target_sents
+        print source_sents
+        
         for (target_sent, source_sent) in zip(target_sents, source_sents):
             print target_sent
             print source_sent
