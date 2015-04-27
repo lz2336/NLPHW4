@@ -45,10 +45,11 @@ class BerkeleyAligner():
         for (target_sent, source_sent) in zip(target_sents, source_sents):
             target_sent = [None] + target_sent
             for word in source_sent:
-                if word not in counts:
-                    counts[word] = set(target_sent)
-                else:
-                    counts[word].update(target_sent)
+                if word in target_sent:
+                    if word in counts:
+                        counts[word] = set(target_sent)
+                    else:
+                        counts[word].update(target_sent)
 
                     for word, target_words in counts.iteritems():
                         for target_word in target_words:
@@ -216,7 +217,6 @@ class BerkeleyAligner():
                     t[(g, e)] = (c_eg[(e, g)] + c_ge[(g, e)]) / (c_eg[g] + c_ge[e])
                 else:
                     t[(g, e)] = t_ge[(g, e)]
-        print t
 
         # Average q values
         q = {}
