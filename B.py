@@ -171,7 +171,7 @@ class BerkeleyAligner():
                         c_ge[(j, l_g, l_e)] += delta
 
                         c_out[(g_word, e_word)] += delta / 2
-                        c_out.[e_word] += delta
+                        c_out[e_word] += delta
                         c_out[(i, j, l_g, l_e)] += delta / 2
                         c_out[(j, l_g, l_e)] += delta
 
