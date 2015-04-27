@@ -32,7 +32,7 @@ class BerkeleyAligner():
                     max_i = i
 
             if max_i != 0:
-                alignments.append((j - 1, max_i - 1))
+                alignments.append((max_i - 1, j - 1))
 
         return AlignedSent(align_sent.words, align_sent.mots, alignments)
 
