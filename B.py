@@ -35,7 +35,7 @@ class BerkeleyAligner():
     # translation and distortion parameters as a tuple.
 
     def initialize(self, target_sents, source_sents):
-        all_target_words = []
+        all_source_words = []
         q = {}
         t = {}
 
