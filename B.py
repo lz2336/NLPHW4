@@ -156,8 +156,8 @@ class BerkeleyAligner():
 
             # Calculate updated t and q
             for (g_sent, e_sent) in zip(gsents, esents):
-                source_sent = g_sent
-                target_sent = e_sent
+                source_sent = e_sent
+                target_sent = g_sent
                 l = len(source_sent)
                 m = len(target_sent)
 
