@@ -342,11 +342,11 @@ class BerkeleyAligner():
     #                 #     qcounts2[(i, l, m)] = delta
     #     return # count dictionary
 
-    def main(aligned_sents):
-        ba = BerkeleyAligner(aligned_sents, 20)
-        A.save_model_output(aligned_sents, ba, "ba.txt")
-        avg_aer = A.compute_avg_aer(aligned_sents, ba, 50)
+def main(aligned_sents):
+    ba = BerkeleyAligner(aligned_sents, 20)
+    A.save_model_output(aligned_sents, ba, "ba.txt")
+    avg_aer = A.compute_avg_aer(aligned_sents, ba, 50)
 
-        print ('Berkeley Aligner')
-        print ('---------------------------')
-        print('Average AER: {0:.3f}\n'.format(avg_aer))
+    print ('Berkeley Aligner')
+    print ('---------------------------')
+    print('Average AER: {0:.3f}\n'.format(avg_aer))
