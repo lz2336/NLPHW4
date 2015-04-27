@@ -23,12 +23,12 @@ class BerkeleyAligner():
             for i, e_word in enumerate(english):
                 p_max = max(p_max, (self.t[(g_word, e_word)] * self.q[(i + 1, j + 1, l_g, l_e)], i))
 
-        if p_max[1] is not None:
-            alignments.append((j, p_max[1]))
+                if p_max[1] is not None:
+                    alignments.append((j, p_max[1]))
 
-        return AlignedSent(german, english, alignments)
+                    return AlignedSent(german, english, alignments)
 
-    
+
     # TODO: Implement the EM algorithm. num_iters is the number of iterations. Returns the 
     # translation and distortion parameters as a tuple.
 
@@ -43,11 +43,11 @@ class BerkeleyAligner():
                     counts[word] = set(target_sent)
                 else:
                     counts[word].update(target_sent)
-        
-        for word, target_words in counts.iteritems():
-            for target_word in target_words:
-                t[(word, target_word)] = 1.0 / len(target_words)
-            
+
+                    for word, target_words in counts.iteritems():
+                        for target_word in target_words:
+                            t[(word, target_word)] = 1.0 / len(target_words)
+
         # Initialize q. l: length of source sent; m: length of target sent
         for target_sent, source_sent in zip(target_sents, source_sents):  
             target_sent = [None] + target_sent
@@ -77,11 +77,11 @@ class BerkeleyAligner():
         return (t,q)
 
 
-    def train(self, aligned_sents, num_iters):
-        gsents = []
-        esents = []
-        g_vocab = set()
-        e_vocab = set()
+        def train(self, aligned_sents, num_iters):
+            gsents = []
+            esents = []
+            g_vocab = set()
+            e_vocab = set()
         # gsents_N =[]
         # esents_N = []
         for aligned_sent in aligned_sents:
@@ -104,8 +104,8 @@ class BerkeleyAligner():
         # print q_eg
 
         for s in range(0, num_iters):
-             c_eg = defaultdict(float)
-             normalizer = defaultdict(float)
+           c_eg = defaultdict(float)
+           normalizer = defaultdict(float)
 
             #Calculate counts for e2g:
             for k in range(0, len(esents)):
@@ -243,9 +243,9 @@ class BerkeleyAligner():
                         #     t_eg[(target_word, source_word)] = c_eg[(target_word, source_word)] / c_eg[target_word]
                         # else:
                         #     pass
-        return (t, q)
+                        return (t, q)
 
-    
+
     # def calculate_delta(i, j, souw, tarw, t, q):
     #     return delta
 
@@ -342,11 +342,11 @@ class BerkeleyAligner():
     #                 #     qcounts2[(i, l, m)] = delta
     #     return # count dictionary
 
-def main(aligned_sents):
-    ba = BerkeleyAligner(aligned_sents, 20)
-    A.save_model_output(aligned_sents, ba, "ba.txt")
-    avg_aer = A.compute_avg_aer(aligned_sents, ba, 50)
+    def main(aligned_sents):
+        ba = BerkeleyAligner(aligned_sents, 20)
+        A.save_model_output(aligned_sents, ba, "ba.txt")
+        avg_aer = A.compute_avg_aer(aligned_sents, ba, 50)
 
-    print ('Berkeley Aligner')
-    print ('---------------------------')
-    print('Average AER: {0:.3f}\n'.format(avg_aer))
+        print ('Berkeley Aligner')
+        print ('---------------------------')
+        print('Average AER: {0:.3f}\n'.format(avg_aer))
