@@ -137,20 +137,17 @@ class BerkeleyAligner():
                         c_eg[(i, j, l_e, l_g)] += delta
                         c_eg[(j, l_e, l_g)] += delta
 
-            #Update t_eg values
-            g_vocab.add(None)
-            for e in e_vocab:
-                for g in g_vocab:
-                    t_eg[(e, g)] = c_eg[(e, g)] / c_eg[g]
-            g_vocab.remove(None)
 
-            # Update q_eg values
+            # Update t_eg, q_eg values
             for (g_sent, e_sent) in zip(gsents, esents):
                 g_sent = [None] + g_sent
                 l_e = len(e_sent)
                 l_g = len(g_sent) - 1
                 for i in range(0, l_g + 1):
+                    g_word = g_sent[i]
                     for j in range(1, l_e + 1):
+                        e_word = e_sent[j - 1]
+                        t_eg[(e_word, g_word)] = c_eg[(e_word, g_word)] / c_ge[g_word]
                         q_eg[(i, j, l_e, l_g)] = c_eg[(i, j, l_e, l_g)] / c_eg[(j, l_e, l_g)]
 
         # Calculate counts for g2e:
@@ -183,37 +180,31 @@ class BerkeleyAligner():
                         c_ge[(i, j, l_g, l_e)] += delta
                         c_ge[(j, l_g, l_e)] += delta
 
-            print c_ge
-            sys.exit(1)
-            # Update t_ge values
-            e_vocab.add(None)
-            for g in g_vocab:
-                for e in e_vocab:
-                    t_ge[(g, e)] = c_ge[(g, e)] / c_ge[e]
-            e_vocab.remove(None)
-
-            #Update q_ge values
+            #Update t_ge, q_ge values
             for (g_sent, e_sent) in zip(gsents, esents):
                 e_sent = [None] + e_sent
                 l_g = len(g_sent)
                 l_e = len(e_sent) - 1
 
                 for i in range(0, l_e + 1):
+                    e_word = e_sent[i]
                     for j in range(1, l_g + 1):
+                        g_word = g_sent[j - 1]
+                        t_ge[(g_word, e_word)] = c_ge[(g_word, e_word)] / c_ge[e_word]
                         q_ge[(i, j, l_g, l_e)] = c_ge[(i, j, l_g, l_e)] / c_ge[(j, l_g, l_e)]
 
         # Average between 2 models
-        # Average t values
-        t = {}
-        e_vocab.add(None)
-        for g in g_vocab:
-            for e in e_vocab:
-                if (e, g) in t_eg:
-                    t[(g, e)] = (c_eg[(e, g)] + c_ge[(g, e)]) / (c_eg[g] + c_ge[e])
-                else:
-                    t[(g, e)] = t_ge[(g, e)]
+        # t = {}
+        # e_vocab.add(None)
+        # for g in g_vocab:
+        #     for e in e_vocab:
+        #         if (e, g) in t_eg:
+        #             t[(g, e)] = (c_eg[(e, g)] + c_ge[(g, e)]) / (c_eg[g] + c_ge[e])
+        #         else:
+        #             t[(g, e)] = t_ge[(g, e)]
 
         # Average q values
+        t = {}
         q = {}
         for (g_sent, e_sent) in zip(gsents, esents):
             e_sent = [None] + e_sent
@@ -221,11 +212,15 @@ class BerkeleyAligner():
             l_e = len(e_sent) - 1
 
             for i in range(0, l_e + 1):
+                e_word = e_sent[i]
                 for j in range(1, l_g + 1):
-
-                    if (j, i, l_e, l_g) in q_eg:
+                    g_word = g_sent[j - 1]
+                    # if (j, i, l_e, l_g) in q_eg:
+                    if (e_word, g_word) in t_eg:
+                        t[(g_word, e_word)] = (c_eg[(e_word, g_word)] + c_ge[(g_word, e_word)]) / (c_eg[g_word] + c_ge[e_word])
                         q[(i, j, l_g, l_e)] = (c_eg[(j, i, l_e, l_g)] + c_ge[(i, j, l_g, l_e)]) / (c_eg[(i, l_e, l_g)] + c_ge[(j, l_g, l_e)])
                     else:
+                        t[(g_word, e_word)] = t_ge[(g_word, e_word)]
                         q[(i, j, l_g, l_e)] = q_ge[(i, j, l_g, l_e)]
 
                         # print source_word
