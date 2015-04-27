@@ -42,16 +42,16 @@ class BerkeleyAligner():
     # translation and distortion parameters as a tuple.
 
     def initialize(self, target_sents, source_sents):
-        q = {}
-        t = {}
+        q = defaultdict{float}
+        t = defaultdict{float}
         counts = {}
 
         for (target_sent, source_sent) in zip(target_sents, source_sents):
             for word in source_sent[1:]:
                 if word not in counts:
-                    counts[word] = set(target_sent)
+                    counts[word] = set(target_sent[1:])
                 else:
-                    counts[word].update(target_sent)
+                    counts[word].update(target_sent[1:])
         
         for word, target_words in counts.iteritems():
             for target_word in target_words:
