@@ -18,11 +18,11 @@ class BerkeleyAligner():
         m = len(english)
         p_max = 0
         max_j = 1
-        max_i = 1
+        max_i = 0
 
         for j in range(1, l):
             g_word = german[j]
-            for i in range(1, m):
+            for i in range(0, m):
                 e_word = english[i]
                 print g_word
                 print e_word
@@ -52,7 +52,7 @@ class BerkeleyAligner():
             l = len(source_sent)
             m = len(target_sent)
             init_prob = 1.0 / m 
-            for target_idx in range(1, m):
+            for target_idx in range(0, m):
                 for source_idx in range(1, l): # skipping 'NULL' in source_sent
                     q[(target_idx, source_idx, l, m)] = init_prob
 
@@ -117,7 +117,7 @@ class BerkeleyAligner():
                     source_word = source_sent[i]
                     # print source_word
                     normalizer[source_word] = 0
-                    for j in range(1, m):
+                    for j in range(0, m):
                         target_word = target_sent[j]
                         # print target_word
                         # print t_eg[(source_word, target_word)]
@@ -126,7 +126,7 @@ class BerkeleyAligner():
 
                 for i in range(1, l):
                     source_word = source_sent[i]
-                    for j in range(1, m):
+                    for j in range(0, m):
                         target_word = target_sent[j]
                         delta = t_eg[(source_word, target_word)] * q_eg[(j, i, l, m)] / normalizer[source_word]
                         c_eg[(source_word, target_word)] += delta
@@ -144,13 +144,13 @@ class BerkeleyAligner():
                 for i in range(1, l):
                     source_word = source_sent[i]
                     normalizer[source_word] = 0
-                    for j in range(1, m):
+                    for j in range(0, m):
                         target_word = target_sent[j]
                         normalizer[source_word] += t_ge[(source_word, target_word)] * q_ge[(j, i, l, m)]
 
                 for i in range(1, l):
                     source_word = source_sent[i]
-                    for j in range(1, m):
+                    for j in range(0, m):
                         target_word = target_sent[j]
                         delta = t_ge[(source_word, target_word)] * q_ge[(j, i, l, m)] / normalizer[source_word]
                         c_ge[(source_word, target_word)] += delta
@@ -165,9 +165,9 @@ class BerkeleyAligner():
                 l = len(source_sent)
                 m = len(target_sent)
 
-                for j in range(1, m):
+                for j in range(0, m):
                     target_word = target_sent[j]
-                    for i in range(1, l):
+                    for i in range(0, l):
                         source_word = source_sent[i]
                         # print source_word
                         # print target_word
