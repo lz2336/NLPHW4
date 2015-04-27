@@ -111,69 +111,36 @@ class BerkeleyAligner():
 
         for s in range(0, num_iters):
             c_eg = defaultdict(float)
-            normalizer_e = defaultdict(float)
-            c_ge = defaultdict(float)
-            normalizer_g = defaultdict(float)
-            c_out = defaultdict(float)
+            normalizer = defaultdict(float)
 
             #Calculate counts for e2g:
             for k in range(0, len(esents)):
                 e_sent = esents[k]
-                e_sent_N = [None] + esents[k]
-                g_sent_N = [None] + gsents[k]
-                g_sent = gsents[k]
-                
+                g_sent = [None] + gsents[k]
                 l_e = len(e_sent)
-                l_g = len(g_sent)
+                l_g = len(g_sent) - 1
 
-                # Compute Normalization for eg
+                # Compute Normalization
                 for j in range(1, l_e + 1):
                     e_word = e_sent[j - 1]
-                    normalizer_e[e_word] = 0
+                    normalizer[e_word] = 0
                     for i in range(0, l_g + 1):
-                        g_word = g_sent_N[i]
+                        g_word = g_sent[i]
                         # print target_word
                         # print t_eg[(source_word, target_word)]
                         # print q_eg[(j, i, l, m)]
-                        normalizer_e[e_word] += t_eg[(e_word, g_word)] * q_eg[(i, j, l_e, l_g)]
+                        normalizer[e_word] += t_eg[(e_word, g_word)] * q_eg[(i, j, l_e, l_g)]
 
-                # Compute normalization for ge
-                for j in range(1, l_g + 1):
-                    g_word = g_sent[j - 1]
-                    normalizer_g[g_word] = 0
-                    for i in range(0, l_e + 1):
-                        e_word = e_sent_N[i]
-                        normalizer_g[g_word] += t_ge[(g_word, e_word)] * q_ge[(i, j, l_g, l_e)]
-
-                # Counts for eg
+                # Counts
                 for j in range(1, l_e + 1):
                     e_word = e_sent[j - 1]
                     for i in range(0, l_g + 1):
-                        g_word = g_sent_N[i]
-                        delta = t_eg[(e_word, g_word)] * q_eg[(i, j, l_e, l_g)] / normalizer_e[e_word]
+                        g_word = g_sent[i]
+                        delta = t_eg[(e_word, g_word)] * q_eg[(i, j, l_e, l_g)] / normalizer[e_word]
                         c_eg[(e_word, g_word)] += delta
                         c_eg[g_word] += delta
                         c_eg[(i, j, l_e, l_g)] += delta
                         c_eg[(j, l_e, l_g)] += delta
-
-                        c_out[(g_word, e_word)] += delta / 2 if i != 0 else 0
-                        c_out[(j, i, l_g, l_e)] += delta / 2 if i != 0 else 0
-
-                # Counts for ge
-                for j in range(1, l_g + 1):
-                    g_word = g_sent[j - 1]
-                    for i in range(0, l_e + 1):
-                        e_word = e_sent_N[i]
-                        delta = t_ge[(g_word, e_word)] * q_ge[(i, j, l_g, l_e)] / normalizer_g[g_word]
-                        c_ge[(g_word, e_word)] += delta
-                        c_ge[e_word] += delta
-                        c_ge[(i, j, l_g, l_e)] += delta
-                        c_ge[(j, l_g, l_e)] += delta
-
-                        c_out[(g_word, e_word)] += delta / 2
-                        c_out.[e_word] += delta
-                        c_out[(i, j, l_g, l_e)] += delta / 2
-                        c_out[(j, l_g, l_e)] += delta
 
 
             # Update t_eg, q_eg values
@@ -188,6 +155,36 @@ class BerkeleyAligner():
                         t_eg[(e_word, g_word)] = c_eg[(e_word, g_word)] / c_eg[g_word]
                         q_eg[(i, j, l_e, l_g)] = c_eg[(i, j, l_e, l_g)] / c_eg[(j, l_e, l_g)]
 
+        # Calculate counts for g2e:
+        for s in range(0, num_iters):
+            c_ge = defaultdict(float)
+            normalizer = defaultdict(float)
+
+            for k in range(0, len(gsents)):
+                g_sent = gsents[k]
+                e_sent = [None] + esents[k]
+                l_g = len(g_sent)
+                l_e = len(e_sent) - 1
+
+                # Compute normalizer
+                for j in range(1, l_g + 1):
+                    g_word = g_sent[j - 1]
+                    normalizer[g_word] = 0
+                    for i in range(0, l_e + 1):
+                        e_word = e_sent[i]
+                        normalizer[g_word] += t_ge[(g_word, e_word)] * q_ge[(i, j, l_g, l_e)]
+
+                # Counts
+                for j in range(1, l_g + 1):
+                    g_word = g_sent[j - 1]
+                    for i in range(0, l_e + 1):
+                        e_word = e_sent[i]
+                        delta = t_ge[(g_word, e_word)] * q_ge[(i, j, l_g, l_e)] / normalizer[g_word]
+                        c_ge[(g_word, e_word)] += delta
+                        c_ge[e_word] += delta
+                        c_ge[(i, j, l_g, l_e)] += delta
+                        c_ge[(j, l_g, l_e)] += delta
+
             #Update t_ge, q_ge values
             for (g_sent, e_sent) in zip(gsents, esents):
                 e_sent = [None] + e_sent
@@ -201,67 +198,6 @@ class BerkeleyAligner():
                         t_ge[(g_word, e_word)] = c_ge[(g_word, e_word)] / c_ge[e_word]
                         q_ge[(i, j, l_g, l_e)] = c_ge[(i, j, l_g, l_e)] / c_ge[(j, l_g, l_e)]
 
-        # Calculate t and q
-        t = {}
-        q = {}
-
-        for (g_sent, e_sent) in zip(gsents, esents):
-            e_sent = [None] + e_sent
-            l_g = len(g_sent)
-            l_e = len(e_sent) - 1
-
-            for i in range(0, l_e + 1):
-                e_word = e_sent[i]
-                for j in range(1, l_g + 1):
-                    g_word = g_sent[j - 1]
-                    
-                    t[(g_word, e_word)] = c_out[(g_word, e_word)] / c_out[e_word]
-                    q[(i, j, l_g, l_e)] = c_out[(i, j, l_g, l_e)]) / c_out[(j, l_g, l_e)])
-                    
-
-        # # Calculate counts for g2e:
-        # for s in range(0, num_iters):
-        #     c_ge = defaultdict(float)
-        #     normalizer = defaultdict(float)
-
-        #     for k in range(0, len(gsents)):
-        #         g_sent = gsents[k]
-        #         e_sent = [None] + esents[k]
-        #         l_g = len(g_sent)
-        #         l_e = len(e_sent) - 1
-
-        #         # Compute normalizer
-        #         for j in range(1, l_g + 1):
-        #             g_word = g_sent[j - 1]
-        #             normalizer[g_word] = 0
-        #             for i in range(0, l_e + 1):
-        #                 e_word = e_sent[i]
-        #                 normalizer[g_word] += t_ge[(g_word, e_word)] * q_ge[(i, j, l_g, l_e)]
-
-        #         # Counts
-        #         for j in range(1, l_g + 1):
-        #             g_word = g_sent[j - 1]
-        #             for i in range(0, l_e + 1):
-        #                 e_word = e_sent[i]
-        #                 delta = t_ge[(g_word, e_word)] * q_ge[(i, j, l_g, l_e)] / normalizer[g_word]
-        #                 c_ge[(g_word, e_word)] += delta
-        #                 c_ge[e_word] += delta
-        #                 c_ge[(i, j, l_g, l_e)] += delta
-        #                 c_ge[(j, l_g, l_e)] += delta
-
-        #     #Update t_ge, q_ge values
-        #     for (g_sent, e_sent) in zip(gsents, esents):
-        #         e_sent = [None] + e_sent
-        #         l_g = len(g_sent)
-        #         l_e = len(e_sent) - 1
-
-        #         for i in range(0, l_e + 1):
-        #             e_word = e_sent[i]
-        #             for j in range(1, l_g + 1):
-        #                 g_word = g_sent[j - 1]
-        #                 t_ge[(g_word, e_word)] = c_ge[(g_word, e_word)] / c_ge[e_word]
-        #                 q_ge[(i, j, l_g, l_e)] = c_ge[(i, j, l_g, l_e)] / c_ge[(j, l_g, l_e)]
-
         # Average between 2 models
         # t = {}
         # e_vocab.add(None)
@@ -272,25 +208,25 @@ class BerkeleyAligner():
         #         else:
         #             t[(g, e)] = t_ge[(g, e)]
 
-        # # Average q values
-        # t = {}
-        # q = {}
-        # for (g_sent, e_sent) in zip(gsents, esents):
-        #     e_sent = [None] + e_sent
-        #     l_g = len(g_sent)
-        #     l_e = len(e_sent) - 1
+        # Average q values
+        t = {}
+        q = {}
+        for (g_sent, e_sent) in zip(gsents, esents):
+            e_sent = [None] + e_sent
+            l_g = len(g_sent)
+            l_e = len(e_sent) - 1
 
-        #     for i in range(0, l_e + 1):
-        #         e_word = e_sent[i]
-        #         for j in range(1, l_g + 1):
-        #             g_word = g_sent[j - 1]
-        #             # if (j, i, l_e, l_g) in q_eg:
-        #             if (e_word, g_word) in t_eg:
-        #                 t[(g_word, e_word)] = (c_eg[(e_word, g_word)] + c_ge[(g_word, e_word)]) / (c_eg[g_word] + c_ge[e_word])
-        #                 q[(i, j, l_g, l_e)] = (c_eg[(j, i, l_e, l_g)] + c_ge[(i, j, l_g, l_e)]) / (c_eg[(i, l_e, l_g)] + c_ge[(j, l_g, l_e)])
-        #             else:
-        #                 t[(g_word, e_word)] = t_ge[(g_word, e_word)]
-        #                 q[(i, j, l_g, l_e)] = q_ge[(i, j, l_g, l_e)]
+            for i in range(0, l_e + 1):
+                e_word = e_sent[i]
+                for j in range(1, l_g + 1):
+                    g_word = g_sent[j - 1]
+                    # if (j, i, l_e, l_g) in q_eg:
+                    if (e_word, g_word) in t_eg:
+                        t[(g_word, e_word)] = (c_eg[(e_word, g_word)] + c_ge[(g_word, e_word)]) / (c_eg[g_word] + c_ge[e_word])
+                        q[(i, j, l_g, l_e)] = (c_eg[(j, i, l_e, l_g)] + c_ge[(i, j, l_g, l_e)]) / (c_eg[(i, l_e, l_g)] + c_ge[(j, l_g, l_e)])
+                    else:
+                        t[(g_word, e_word)] = t_ge[(g_word, e_word)]
+                        q[(i, j, l_g, l_e)] = q_ge[(i, j, l_g, l_e)]
 
                         # print source_word
                         # print target_word
