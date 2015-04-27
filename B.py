@@ -1,5 +1,7 @@
 import nltk
 import A
+from collections import defaultdict
+from nltk.align import Alignment, AlignedSent
 
 class BerkeleyAligner():
 
