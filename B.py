@@ -106,9 +106,10 @@ class BerkeleyAligner():
 
         (t_eg,q_eg) = self.initialize(gsents, esents)
         (t_ge,q_ge) = self.initialize(esents, gsents)
+        print t_eg
+        print t_ge
+        sys.exit(1)
 
-        # print t_eg
-        # print q_eg
 
         for s in range(0, num_iters):
             c_eg = defaultdict(float)
