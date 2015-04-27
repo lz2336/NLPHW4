@@ -217,6 +217,8 @@ class BerkeleyAligner():
                 e_word = e_sent[i]
                 for j in range(1, l_g + 1):
                     g_word = g_sent[j - 1]
+
+                    print (g_word, e_word)
                     
                     t[(g_word, e_word)] = c_avg_numr[(g_word, e_word)] / c_avg_denm[(g_word, e_word)]
                     q[(i, j, l_g, l_e)] = c_avg_numr[(i, j, l_g, l_e)] / c_avg_denm[(j, l_g, l_e)]
