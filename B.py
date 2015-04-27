@@ -2,6 +2,7 @@ import nltk
 import A
 from collections import defaultdict
 from nltk.align import Alignment, AlignedSent
+import itertools
 
 class BerkeleyAligner():
 
@@ -41,35 +42,44 @@ class BerkeleyAligner():
     # translation and distortion parameters as a tuple.
 
     def initialize(self, target_sents, source_sents):
-        all_source_words = []
         q = {}
         t = {}
+        counts = {}
 
         for (target_sent, source_sent) in zip(target_sents, source_sents):
-            all_source_words += source_sent[1:] # removing None
+            for word in source_sent[1:]:
+                if word in target_sent:
+                    counts[word] = set(target_sent[1:])
+                else:
+                    counts[word].update(target_sent[1:])
+        
+        for word, target_words in counts.iteritems():
+            for target_word in target_words:
+                t[(word, target_word)] = 1 / len(target_words)
             
-            # Initialize q. l: length of source sent; m: length of target sent
+        # Initialize q. l: length of source sent; m: length of target sent
+        for target_sent, source_sent in zip(target_sents, source_sents)    
             l = len(source_sent)
             m = len(target_sent)
-            init_prob = 1.0 / m 
+            init_prob = 1.0 / (m - 1)
             for target_idx in range(1, m):
                 for source_idx in range(1, l): # skipping 'NULL' in source_sent
                     q[(target_idx, source_idx, l, m)] = init_prob
 
-        # Initialize t
-        t = {}
-        all_source_words = set(all_source_words)
+        # # Initialize t
+        # t = {}
+        # all_source_words = set(all_source_words)
 
-        for word in all_source_words:
-            possible_translations = []
-            for (target_sent, source_sent) in zip(target_sents, source_sents):
-                if word in source_sent:
-                    possible_translations += target_sent # including 'NULL' in target_sent
+        # for word in all_source_words:
+        #     possible_translations = []
+        #     for (target_sent, source_sent) in zip(target_sents, source_sents):
+        #         if word in source_sent:
+        #             possible_translations += target_sent # including 'NULL' in target_sent
 
-            possible_translations = set(possible_translations)
-            count = len(possible_translations)
-            for possible_translation in possible_translations:
-                t[(word, possible_translation)] = 1.0 / count
+        #     possible_translations = set(possible_translations)
+        #     count = len(possible_translations)
+        #     for possible_translation in possible_translations:
+        #         t[(word, possible_translation)] = 1.0 / count
 
         return (t,q)
 
