@@ -79,14 +79,14 @@ class BerkeleyAligner():
         # gsents_N =[]
         # esents_N = []
         for aligned_sent in aligned_sents:
-            gsent = aligned_sent.words
-            esent = aligned_sent.mots
+            gsent = ['NULL'] + aligned_sent.words
+            esent = ['NULL'] + aligned_sent.mots
             print gsent
             print esent
             # gsents.append(aligned_sent.words)
-            gsents.append(gsent.insert(0, 'NULL'))
+            gsents.append(gsent)
             # esents.append(aligned_sent.mots)
-            esents.append(esent.insert(0, 'NULL'))
+            esents.append(esent)
 
         # Initialize t_eg, q_eg, t_ge, q_ge
         # Only t_eg and q_eg are returned
