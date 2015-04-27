@@ -142,7 +142,7 @@ class BerkeleyAligner():
             g_vocab.add(None)
             for e in e_vocab:
                 for g in g_vocab:
-                    print g
+                    print (g, c_eg[g])
                     t_eg[(e, g)] = c_eg[(e, g)] / c_eg[g]
             g_vocab.remove(None)
 
