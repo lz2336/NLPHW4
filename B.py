@@ -34,7 +34,7 @@ class BerkeleyAligner():
     # TODO: Implement the EM algorithm. num_iters is the number of iterations. Returns the 
     # translation and distortion parameters as a tuple.
 
-    def initialize(target_sents, source_sents):
+    def initialize(self, target_sents, source_sents):
         all_target_words = []
         q = {}
         t = {}
@@ -82,8 +82,8 @@ class BerkeleyAligner():
         # Initialize t_eg, q_eg, t_ge, q_ge
         # Only t_eg and q_eg are returned
 
-        t_eg,q_eg = self.initialize(gsents, esents)
-        t_ge,q_ge = self.initialize(esents, gsents)
+        (t_eg,q_eg) = self.initialize(gsents, esents)
+        (t_ge,q_ge) = self.initialize(esents, gsents)
         
 
         for s in range(0, num_iters):
