@@ -13,20 +13,27 @@ class BerkeleyAligner():
     #       an AlignedSent object, with the sentence pair and the alignments computed.
     def align(self, align_sent):
         alignments = []
-        german = align_sent.words
-        english = align_sent.mots
-        l_g = len(german)
-        l_e = len(english)
+        german = [None] + align_sent.words
+        english = [None] + align_sent.mots
+        l = len(german)
+        m = len(english)
+        p_max = 0
+        max_j = 1
+        max_i = 0
 
-        for j, g_word in enumerate(german):
-            p_max = (self.t[(g_word, None)] * self.q[(0, j + 1, l_g, l_e)], None)
-            for i, e_word in enumerate(english):
-                p_max = max(p_max, (self.t[(g_word, e_word)] * self.q[(i + 1, j + 1, l_g, l_e)], i))
+        for j in range(1, l):
+            g_word = german[j]
+            for i in range(0, m):
+                e_word = english[i]
+                if p_max < (self.t[(g_word, e_word)] * self.q[(i, j, l, m)]):
+                    p_max = self.t[(g_word, e_word)] * self.q[(i, j, l, m)]
+                    max_i = i
 
-        if p_max[1] is not None:
-            alignments.append((j, p_max[1]))
+            if max_i != 0:
+                print (max_i - 1, j - 1)
+                alignments.append((max_i - 1, j - 1))
 
-        return AlignedSent(german, english, alignments)
+        return AlignedSent(align_sent.words, align_sent.mots, alignments)
 
     
     # TODO: Implement the EM algorithm. num_iters is the number of iterations. Returns the 
@@ -38,9 +45,9 @@ class BerkeleyAligner():
         counts = {}
 
         for (target_sent, source_sent) in zip(target_sents, source_sents):
-            for word in source_sent:
+            for word in source_sent[1:]:
                 if word not in counts:
-                    counts[word] = set(target_sent)
+                    counts[word] = set(target_sent[1:])
                 else:
                     counts[word].update(target_sent)
         
@@ -50,14 +57,13 @@ class BerkeleyAligner():
             
         # Initialize q. l: length of source sent; m: length of target sent
         for target_sent, source_sent in zip(target_sents, source_sents):  
-            target_sent = [None] + target_sent
-            l_src = len(source_sent)
-            l_tar = len(target_sent) - 1
-            init_prob = 1.0 / (l_tar + 1)
+            l = len(source_sent)
+            m = len(target_sent)
+            init_prob = 1.0 / m
 
-            for i in range(0, l_tar + 1):
-                for j in range(1, l_src + 1):
-                    q[(i, j, l_src, l_tar)] = init_prob
+            for target_idx in range(0, m):
+                for source_idx in range(1, l): # skipping 'NULL' in source_sent
+                    q[(target_idx, source_idx, l, m)] = init_prob
 
         # # Initialize t
         # t = {}
@@ -80,19 +86,15 @@ class BerkeleyAligner():
     def train(self, aligned_sents, num_iters):
         gsents = []
         esents = []
-        g_vocab = set()
-        e_vocab = set()
         # gsents_N =[]
         # esents_N = []
         for aligned_sent in aligned_sents:
-            # gsent = [None] + aligned_sent.words
-            # esent = [None] + aligned_sent.mots
+            gsent = [None] + aligned_sent.words
+            esent = [None] + aligned_sent.mots
             # gsents.append(aligned_sent.words)
-            gsents.append(aligned_sent.words)
+            gsents.append(gsent)
             # esents.append(aligned_sent.mots)
-            esents.append(aligned_sent.mots)
-            g_vocab.update(aligned_sent.words)
-            e_vocab.update(aligned_sent.mots)
+            esents.append(esent)
 
         # Initialize t_eg, q_eg, t_ge, q_ge
         # Only t_eg and q_eg are returned
@@ -103,132 +105,83 @@ class BerkeleyAligner():
         # print t_eg
         # print q_eg
 
-        for s in range(0, num_iters):
-             c_eg = defaultdict(float)
-             normalizer = defaultdict(float)
+        c_eg = defaultdict(float)
+        c_ge = defaultdict(float)
+        # c_q_eg = defaultdict(float)
+        # c_q_ge = defaultdict(float)
+        normalizer = defaultdict(float)
+        # normalizer_ge = defaultdict(float)
 
+        for s in range(0, num_iters):
             #Calculate counts for e2g:
             for k in range(0, len(esents)):
-                e_sent = esents[k]
-                g_sent = [None] + gsents[k]
-                l_e = len(e_sent)
-                l_g = len(g_sent) - 1
+                source_sent = esents[k]
+                target_sent = gsents[k]
+                l = len(source_sent)
+                m = len(target_sent)
 
-                # Compute Normalization
-                for j in range(1, l_e + 1):
-                    e_word = e_sent[j - 1]
-                    normalizer[e_word] = 0
-                    for i in range(0, l_g + 1):
-                        g_word = g_sent[i]
+                for i in range(1, l):
+                    source_word = source_sent[i]
+                    # print source_word
+                    normalizer[source_word] = 0
+                    for j in range(0, m):
+                        target_word = target_sent[j]
                         # print target_word
                         # print t_eg[(source_word, target_word)]
                         # print q_eg[(j, i, l, m)]
-                        normalizer[e_word] += t_eg[(e_word, g_word)] * q_eg[(i, j, l_e, l_g)]
+                        normalizer[source_word] += t_eg[(source_word, target_word)] * q_eg[(j, i, l, m)]
 
-                # Counts
-                for j in range(1, l_e + 1):
-                    e_word = e_sent[j - 1]
-                    for i in range(0, l_g + 1):
-                        g_word = g_sent[i]
-                        delta = t_eg[(e_word, f_word)] * q_eg[(i, j, l_e, l_g)] / normalizer[e_word]
-                        c_eg[(e_word, g_word)] += delta
-                        c_eg[g_word] += delta
-                        c_eg[(i, j, l_e, l_g)] += delta
-                        c_eg[(j, l_e, l_g)] += delta
+                for i in range(1, l):
+                    source_word = source_sent[i]
+                    for j in range(0, m):
+                        target_word = target_sent[j]
+                        delta = t_eg[(source_word, target_word)] * q_eg[(j, i, l, m)] / normalizer[source_word]
+                        c_eg[(source_word, target_word)] += delta
+                        c_eg[source_word] += delta
+                        c_eg[(j, i, l, m)] += delta
+                        c_eg[(i, l, m)] += delta
 
-            #Update t_eg values
-            for e in e_vocab:
-                for g in g_vocab.add(None):
-                    t_eg[(e, g)] = c_eg[(e, g)] / c_eg[g]
-
-            # Update q_eg values
-            for (g_sent, e_sent) in zip(gsents, esents):
-                g_sent = [None] + g_sent
-                l_e = len(e_sent)
-                l_g = len(g_sent) - 1
-                for i in range(0, l_g + 1):
-                    for j in range(1, l_e + 1):
-                        q_eg[(i, j, l_e, l_g)] = c_eg[(i, j, l_e, l_g)] / c_eg[(j, l_e, l_g)]
-
-        # Calculate counts for g2e:
         for s in range(0, num_iters):
-            c_ge = defaultdict(float)
-            normalizer = defaultdict(float)
-
+            # Calculate counts for g2e:
             for k in range(0, len(gsents)):
-                g_sent = gsents[k]
-                e_sent = [None] + esents[k]
-                l_g = len(g_sent)
-                l_e = len(e_sent) - 1
+                source_sent = gsents[k]
+                target_sent = esents[k]
+                l = len(source_sent)
+                m = len(target_sent)
 
-                # Compute normalizer
-                for j in range(1, l_g + 1):
-                    g_word = g_sent[j]
-                    normalizer[g_word] = 0
-                    for i in range(0, l_e + 1):
-                        e_word = e_sent[i]
-                        normalizer[g_word] += t_ge[(g_word, e_word)] * q_ge[(i, j, l_g, l_e)]
+                for i in range(1, l):
+                    source_word = source_sent[i]
+                    normalizer[source_word] = 0
+                    for j in range(0, m):
+                        target_word = target_sent[j]
+                        normalizer[source_word] += t_ge[(source_word, target_word)] * q_ge[(j, i, l, m)]
 
-                # Counts
-                for j in range(1, l_g + 1):
-                    g_word = g_sent[j]
-                    for i in range(0, l_e + 1):
-                        e_word = e_sent[i]
-                        delta = t_ge[(g_word, e_word)] * q_ge[(i, j, l_g, l_e)] / normalizer[g_word]
-                        c_ge[(g_word, e_word)] += delta
-                        c_ge[e_word] += delta
-                        c_ge[(i, j, l_g, l_e)] += delta
-                        c_ge[(j, l_g, l_e)] += delta
+                for i in range(1, l):
+                    source_word = source_sent[i]
+                    for j in range(0, m):
+                        target_word = target_sent[j]
+                        delta = t_ge[(source_word, target_word)] * q_ge[(j, i, l, m)] / normalizer[source_word]
+                        c_ge[(source_word, target_word)] += delta
+                        c_ge[source_word] += delta
+                        c_ge[(j, i, l, m)] += delta
+                        c_ge[(i, l, m)] += delta
 
-            # Update t_ge values
-            for g in g_vocab:
-                for e in e_vocab.add(None):
-                    t_ge[(g, e)] = c_ge[(g, e)] / c_ge[e]
-
-            #Update q_ge values
+            # Calculate updated t and q
             for (g_sent, e_sent) in zip(gsents, esents):
-                e_sent = [None] + e_sent
-                l_g = len(g_sent)
-                l_e = len(e_sent) - 1
+                source_sent = g_sent
+                target_sent = e_sent
+                l = len(source_sent)
+                m = len(target_sent)
 
-                for i in range(0, l_e + 1):
-                    e_word = e_sent[i]
-                    for j in range(1, l_g + 1):
-                        g_word = g_sent[j]
-                        q_ge[(i, j, l_g, l_e)] = c_ge[(i, j, l_g, l_e)] / c_ge[(j, l_g, l_e)]
-
-        # Average between 2 models
-        # Average t values
-        t = {}
-        for g in g_vocab:
-            for e in e_vocab.add[None]:
-                if (e, g) in t_eg:
-                    t[(g, e)] = (c_eg[(e, g)] + c_ge[(g, e)]) / (c_eg[g] + c_ge[e])
-                else:
-                    t[(g, e)] = t_ge[(g, e)]
-
-        # Average q values
-        q = {}
-        for (g_sent, e_sent) in zip(gsents, esents):
-            e_sent = [None] + e_sent
-            l_g = len(g_sent)
-            l_e = len(e_sent) - 1
-
-            for i in range(0, l_e + 1):
-                e_word = e_sent[i]
-                for j in range(1, l_g + 1):
-                    g_word = g_sent[j]
-
-                    if (j, i, l_e, l_g) in q_eg:
-                        q[(i, j, l_g, l_e)] = (c_eg[(j, i, l_e, l_g)] + c_ge[(i, j, l_g, l_e)]) / (c_eg[(i, l_e, l_g)] + c_ge[(j, l_g, l_e)])
-                    else:
-                        q[(i, j, l_g, l_e)] = q_ge[(i, j, l_g, l_e)]
-
+                for j in range(0, m):
+                    target_word = target_sent[j]
+                    for i in range(1, l):
+                        source_word = source_sent[i]
                         # print source_word
                         # print target_word
                         # if i * j != 0:
-                        
-                        
+                        q_ge[(j, i, l, m)] = (c_ge[(j, i, l, m)] + c_eg[(i, j, m, l)]) / (c_ge[(i, l, m)] + c_eg[(j, m, l)])
+                        t_ge[(source_word, target_word)] = (c_ge[(source_word, target_word)] + c_eg[(target_word, source_word)]) / (c_ge[source_word] + c_eg[target_word])
                         #     q_eg[(i, j, m, l)] = (c_ge[(j, i, l, m)] + c_eg[(i, j, m, l)]) / (c_ge[(i, l, m)] + c_eg[(j, m, l)])
                         #     t_eg[(target_word, source_word)] = (c_ge[(source_word, target_word)] + c_eg[(target_word, source_word)]) / (c_ge[source_word] + c_eg[target_word])
                         # elif j == 0 and i != 0:
@@ -243,7 +196,7 @@ class BerkeleyAligner():
                         #     t_eg[(target_word, source_word)] = c_eg[(target_word, source_word)] / c_eg[target_word]
                         # else:
                         #     pass
-        return (t, q)
+        return (t_ge, q_ge)
 
     
     # def calculate_delta(i, j, souw, tarw, t, q):
