@@ -176,9 +176,9 @@ class BerkeleyAligner():
                         c_avg_numr[(g_word, e_word)] += delta / 2 if i != 0 else delta
                         c_avg_denm[(g_word, e_word)] += delta / 2 if i != 0 else delta
                         c_avg_numr[(i, j, l_g, l_e)] += delta / 2 if i != 0 else delta
-                        c_avg_denm[(j, l_g, l_e)] += delta / 2 if i != 0 else delta
-
-
+                        c_avg_denm[(j, l_g, l_e)] += delta / 2 if i != 0 else 
+                        
+                print c_avg_denm[(g_sent[0], e_sent_N[0])]
             # Update t_eg, q_eg values
             for (g_sent, e_sent) in zip(gsents, esents):
                 g_sent = [None] + g_sent
