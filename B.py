@@ -172,12 +172,12 @@ class BerkeleyAligner():
                             t_ge[(source_word, target_word)] = (c_t_ge[(source_word, target_word)] + c_t_eg[(target_word, source_word)]) / (c_t_ge[source_word] + c_t_eg[target_word])
                             q_eg[(i, j, m, l)] = (c_q_ge[(j, i, l, m)] + c_q_eg[(i, j, m, l)]) / (c_q_ge[(i, l, m)] + c_q_eg[(j, m, l)])
                             t_eg[(target_word, source_word)] = (c_t_ge[(source_word, target_word)] + c_t_eg[(target_word, source_word)]) / (c_t_ge[source_word] + c_t_eg[target_word])
-                        elif i == 0 and j != 0:
+                        elif j == 0 and i != 0:
                             q_ge[(j, i, l, m)] = c_q_ge[(j, i, l, m)] / c_q_ge[(i, l, m)]
                             t_ge[(source_word, target_word)] = c_t_ge[(source_word, target_word)] / c_t_ge[source_word]
                             q_eg[(i, j, m, l)] = (c_q_ge[(j, i, l, m)] + c_q_eg[(i, j, m, l)]) / (c_q_ge[(i, l, m)] + c_q_eg[(j, m, l)])
                             t_eg[(target_word, source_word)] = (c_t_ge[(source_word, target_word)] + c_t_eg[(target_word, source_word)]) / (c_t_ge[source_word] + c_t_eg[target_word])
-                        elif i != 0 and j == 0:
+                        elif j != 0 and i == 0:
                             q_ge[(j, i, l, m)] = (c_q_ge[(j, i, l, m)] + c_q_eg[(i, j, m, l)]) / (c_q_ge[(i, l, m)] + c_q_eg[(j, m, l)])
                             t_ge[(source_word, target_word)] = (c_t_ge[(source_word, target_word)] + c_t_eg[(target_word, source_word)]) / (c_t_ge[source_word] + c_t_eg[target_word])
                             q_eg[(i, j, m, l)] = c_q_eg[(i, j, m, l)] / c_q_eg[(j, m, l)]
