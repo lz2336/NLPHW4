@@ -89,8 +89,8 @@ class BerkeleyAligner():
         (t_eg,q_eg) = self.initialize(gsents, esents)
         (t_ge,q_ge) = self.initialize(esents, gsents)
 
-        print t_eg
-        print q_eg
+        # print t_eg
+        # print q_eg
         
 
         for s in range(0, num_iters):
@@ -111,13 +111,13 @@ class BerkeleyAligner():
 
                 for i in range(1, l):
                     source_word = source_sent[i]
-                    print source_word
+                    # print source_word
                     normalizer_eg[source_word] = 0
                     for j in range(0, m):
                         target_word = target_sent[j]
-                        print target_word
-                        print t_eg[(source_word, target_word)]
-                        print q_eg[(j, i, l, m)]
+                        # print target_word
+                        # print t_eg[(source_word, target_word)]
+                        # print q_eg[(j, i, l, m)]
                         normalizer_eg[source_word] += t_eg[(source_word, target_word)] * q_eg[(j, i, l, m)]
 
                 for i in range(1, l):
@@ -125,6 +125,7 @@ class BerkeleyAligner():
                     for j in range(0, m):
                         target_word = target_sent[j]
                         delta = t_eg[(source_word, target_word)] * q_eg[(j, i, l, m)] / normalizer_eg[source_word]
+                        print delta
                         c_t_eg[(source_word, target_word)] += delta
                         c_t_eg[source_word] += delta
                         c_q_eg[(j, i, l, m)] += delta
