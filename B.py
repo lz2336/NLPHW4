@@ -149,7 +149,7 @@ class BerkeleyAligner():
                     source_word = source_sent[i]
                     for j in range(0, m):
                         target_word = target_sent[j]
-                        delta = t_ge[(source_word, target_word)] * q_ge[(j, i, l, m)] / normalizer_ge[source_word]
+                        delta = t_ge[(source_word, target_word)] * q_ge[(j, i, l, m)] / normalizer[source_word]
                         c_ge[(source_word, target_word)] += delta
                         c_ge[source_word] += delta
                         c_ge[(j, i, l, m)] += delta
