@@ -24,10 +24,10 @@ class BerkeleyAligner():
         p_max = 0.0
 
         for j in range(1, l_g + 1):
-            g_word = g_sent[j - 1]
+            g_word = german[j - 1]
             p_max = (self.t[(g_word, None)] * self.q[(0, j, l_g, l_e)], None)
             for i in range (1, l_e + 1):
-                e_word = e_sent[i]
+                e_word = english[i]
                 p_max = max(p_max, (self.t[(g_word, e_word)] * self.q[(i, j, l_g, l_e)], i))
 
             if p_max[1] is not None:
