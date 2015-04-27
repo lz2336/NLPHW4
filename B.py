@@ -22,15 +22,9 @@ class BerkeleyAligner():
         for j in range(0, l_g):
             g_word = german[j]
             p_max = (self.t[(g_word, None)] * self.q[(0, j + 1, l_g, l_e)], None)
-            print self.t[(g_word, None)]
-            print self.q[(0, j+1, l_g, l_e)]
 
             for i in range (0, l_e):
                 e_word = english[i]
-                # print (g_word, e_word)
-                # print self.t[(g_word, e_word)]
-                # print (i, j, l_g, l_e)
-                # print self.q[(i, j, l_g, l_e)]
                 p_max = max(p_max, (self.t[(g_word, e_word)] * self.q[(i + 1, j + 1, l_g, l_e)], i))
 
             if p_max[1] is not None:
@@ -66,7 +60,7 @@ class BerkeleyAligner():
 
             for i in range(0, l_tar + 1):
                 for j in range(1, l_src + 1):
-                    q[(i, j, l_src, l_tar)] = init_prob
+                    q[(i, j, l_src, l_tar)] += init_prob
 
         # # Initialize t
         # t = {}
@@ -198,17 +192,7 @@ class BerkeleyAligner():
                         t_ge[(g_word, e_word)] = c_ge[(g_word, e_word)] / c_ge[e_word]
                         q_ge[(i, j, l_g, l_e)] = c_ge[(i, j, l_g, l_e)] / c_ge[(j, l_g, l_e)]
 
-        # Average between 2 models
-        # t = {}
-        # e_vocab.add(None)
-        # for g in g_vocab:
-        #     for e in e_vocab:
-        #         if (e, g) in t_eg:
-        #             t[(g, e)] = (c_eg[(e, g)] + c_ge[(g, e)]) / (c_eg[g] + c_ge[e])
-        #         else:
-        #             t[(g, e)] = t_ge[(g, e)]
-
-        # Average q values
+        # Averaging t, q values
         t = {}
         q = {}
         for (g_sent, e_sent) in zip(gsents, esents):
@@ -220,132 +204,15 @@ class BerkeleyAligner():
                 e_word = e_sent[i]
                 for j in range(1, l_g + 1):
                     g_word = g_sent[j - 1]
-                    # if (j, i, l_e, l_g) in q_eg:
                     if (e_word, g_word) in t_eg:
                         t[(g_word, e_word)] = (c_eg[(e_word, g_word)] + c_ge[(g_word, e_word)]) / (c_eg[g_word] + c_ge[e_word])
-                        # q[(i, j, l_g, l_e)] = (c_eg[(j, i, l_e, l_g)] + c_ge[(i, j, l_g, l_e)]) / (c_eg[(i, l_e, l_g)] + c_ge[(j, l_g, l_e)])
-                        q[(i, j, l_g, l_e)] = q_ge[(i, j, l_g, l_e)]
+                        q[(i, j, l_g, l_e)] = (c_eg[(j, i, l_e, l_g)] + c_ge[(i, j, l_g, l_e)]) / (c_eg[(i, l_e, l_g)] + c_ge[(j, l_g, l_e)])             
                     else:
                         t[(g_word, e_word)] = t_ge[(g_word, e_word)]
                         q[(i, j, l_g, l_e)] = q_ge[(i, j, l_g, l_e)]
 
-                        # print source_word
-                        # print target_word
-                        # if i * j != 0:
-                        
-                        
-                        #     q_eg[(i, j, m, l)] = (c_ge[(j, i, l, m)] + c_eg[(i, j, m, l)]) / (c_ge[(i, l, m)] + c_eg[(j, m, l)])
-                        #     t_eg[(target_word, source_word)] = (c_ge[(source_word, target_word)] + c_eg[(target_word, source_word)]) / (c_ge[source_word] + c_eg[target_word])
-                        # elif j == 0 and i != 0:
-                        #     q_ge[(j, i, l, m)] = c_ge[(j, i, l, m)] / c_ge[(i, l, m)]
-                        #     t_ge[(source_word, target_word)] = c_ge[(source_word, target_word)] / c_ge[source_word]
-                        #     q_eg[(i, j, m, l)] = (c_ge[(j, i, l, m)] + c_eg[(i, j, m, l)]) / (c_ge[(i, l, m)] + c_eg[(j, m, l)])
-                        #     t_eg[(target_word, source_word)] = (c_ge[(source_word, target_word)] + c_eg[(target_word, source_word)]) / (c_ge[source_word] + c_eg[target_word])
-                        # elif j != 0 and i == 0:
-                        #     q_ge[(j, i, l, m)] = (c_ge[(j, i, l, m)] + c_eg[(i, j, m, l)]) / (c_ge[(i, l, m)] + c_eg[(j, m, l)])
-                        #     t_ge[(source_word, target_word)] = (c_ge[(source_word, target_word)] + c_eg[(target_word, source_word)]) / (c_ge[source_word] + c_eg[target_word])
-                        #     q_eg[(i, j, m, l)] = c_eg[(i, j, m, l)] / c_eg[(j, m, l)]
-                        #     t_eg[(target_word, source_word)] = c_eg[(target_word, source_word)] / c_eg[target_word]
-                        # else:
-                        #     pass
         return (t, q)
 
-
-    # def calculate_delta(i, j, souw, tarw, t, q):
-    #     return delta
-
-    # def calculate_counts(gsents, esents, t, q):
-    #     ge_tcounts1 = {}
-    #     ge_tcounts2 = {}
-    #     ge_qcounts1 = {}
-    #     ge_qcounts2 = {}
-    #     eg_tcounts1 = {}
-    #     eg_tcounts2 = {}
-    #     eg_qcounts1 = {}
-    #     eg_qcounts2 = {}
-
-    #     for k in range(0, len(gsents)):
-    #         # ge_source_sent = gsents_N[k]
-    #         # ge_target_sent = esents[k]
-    #         # eg_source_sent = esents_N[k]
-    #         # eg_target_sent = gsents[k]
-    #         g_sent = gsents[k]
-    #         e_sent = esent[k]
-
-    #         e_len = len(e_sent)
-    #         g_len = len(g_sent)
-
-    #         for e_idx in range(0, e_len):
-    #             for g_idx in range(0, g_len):
-    #                 if e_idx == 0: # e_idx at 'NULL' in e_len
-    #                     # only update g2e counts
-    #                     g_w = g_sent[g_idx]
-    #                     e_w = e_sent[e_idx]
-    #                     delta = calculate_delta(g_idx, e_idx, g_w, e_w, ge_t, ge_q)
-
-    #                     if (g_w, e_w) in tcounts1:
-    #                         tcounts1[(g_w, e_w)] += delta
-    #                     else:
-    #                         tcounts1[(g_w, e_w)] = delta
-    #                     if e_w in tcounts2:
-    #                         tcounts2[e_w] += delta
-    #                     else:
-    #                         tcounts2[e_w] = delta
-    #                     if (j, i, l, m) in qcounts1:
-    #                         qcounts1[(j, i, l, m)] += delta
-    #                     else:
-    #                         qcounts1[(j, i, l, m)] = delta
-    #                     if (i, l, m) in qcounts2:
-    #                         qcounts2[(i, l, m)] += delta
-    #                     else:
-    #                         qcounts2[(i, l, m)] = delta
-
-
-    #                 elif g_idx == 0: # g_idx at 'NULL' in g_len
-    #                     # only update e2g counts
-    #                     sourcew = e_sent[e_idx]
-    #                     targetw = g_sent[g_idx]
-    #                     delta = calculate_delta(g_idx, e_idx, sourcew, targetw, ge_t, ge_q)
-
-    #                     if (sourcew, targetw) in tcounts1:
-    #                         tcounts1[(sourcew, targetw)] += delta
-    #                     else:
-    #                         tcounts1[(sourcew, targetw)] = delta
-    #                     if targetw in tcounts2:
-    #                         tcounts2[targetw] += delta
-    #                     else:
-    #                         tcounts2[targetw] = delta
-    #                     if (j, i, l, m) in qcounts1:
-    #                         qcounts1[(j, i, l, m)] += delta
-    #                     else:
-    #                         qcounts1[(j, i, l, m)] = delta
-    #                     if (i, l, m) in qcounts2:
-    #                         qcounts2[(i, l, m)] += delta
-    #                     else:
-    #                         qcounts2[(i, l, m)] = delta
-    #                 else:
-
-
-    #                 # souw = source_words[i]
-    #                 # tarw = target_words[j]
-    #                 # delta = calculate_delta(i, j, souw, tarw, #t_ge, #q_ge)
-    #                 # if (souw, tarw) in tcounts1:
-    #                 #     tcounts1[(souw, tarw)] += delta
-    #                 # else:
-    #                 #     tcounts1[(souw, tarw)] = delta
-    #                 # if tarw in tcounts2:
-    #                 #     tcounts2[tarw] += delta
-    #                 # else:
-    #                 #     tcounts2 = delta
-    #                 # if (j, i, l, m) in qcounts1:
-    #                 #     qcounts1[(j, i, l, m)] += delta
-    #                 # else:
-    #                 #     qcounts1[(j, i, l, m)] = delta
-    #                 # if (i, l, m) in qcounts2:
-    #                 #     qcounts2[(i, l, m)] += delta
-    #                 # else:
-    #                 #     qcounts2[(i, l, m)] = delta
-    #     return # count dictionary
 
 def main(aligned_sents):
     ba = BerkeleyAligner(aligned_sents, 10)
