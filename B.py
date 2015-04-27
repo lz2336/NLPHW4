@@ -104,8 +104,8 @@ class BerkeleyAligner():
         (t_eg,q_eg) = self.initialize(gsents, esents)
         (t_ge,q_ge) = self.initialize(esents, gsents)
 
-        # print t_eg
-        # print q_eg
+        print t_eg
+        print q_eg
         
 
         for s in range(0, num_iters):
