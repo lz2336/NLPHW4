@@ -26,7 +26,7 @@ class BerkeleyAligner():
             print self.t[(g_word, None)]
             print self.q[(0, j, l_g, l_e)]
 
-            for i in range (1, l_e + 1):
+            for i in range (1, l_e):
                 e_word = english[i]
                 # print (g_word, e_word)
                 # print self.t[(g_word, e_word)]
