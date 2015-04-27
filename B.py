@@ -41,7 +41,7 @@ class BerkeleyAligner():
 
         print target_sents
         print source_sents
-        
+
         for (target_sent, source_sent) in zip(target_sents, source_sents):
             print target_sent
             print source_sent
@@ -277,6 +277,7 @@ class BerkeleyAligner():
 
 def main(aligned_sents):
     ba = BerkeleyAligner(aligned_sents, 20)
+    print aligned_sents
     A.save_model_output(aligned_sents, ba, "ba.txt")
     avg_aer = A.compute_avg_aer(aligned_sents, ba, 50)
 
