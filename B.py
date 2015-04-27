@@ -164,7 +164,7 @@ class BerkeleyAligner():
                 for j in range(0, m):
                     target_word = target_sent[j]
                     for i in range(0, l):
-                        source_word = source_sent[j]
+                        source_word = source_sent[i]
                         print source_word
                         print target_word
                         if i * j != 0:
