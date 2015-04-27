@@ -106,6 +106,7 @@ class BerkeleyAligner():
 
         print t_eg
         print t_ge
+        sys.exit(1)
         
         for s in range(0, num_iters):
             c_eg = defaultdict(float)
