@@ -24,12 +24,15 @@ class BerkeleyAligner():
             g_word = german[j]
             for i in range(0, m):
                 e_word = english[i]
+                print g_word
+                print e_word
+                print self.t[(g_word, e_word)]
                 if p_max < (self.t[(g_word, e_word)] * self.q[(i, j, l, m)]):
                     p_max = self.t[(g_word, e_word)] * self.q[(i, j, l, m)]
                     max_i = i
 
             if max_i != 0:
-                alignments.append((j-1, max_i-1))
+                alignments.append((j - 1, max_i - 1))
 
         return AlignedSent(align_sent.words, align_sent.mots, alignments)
 
