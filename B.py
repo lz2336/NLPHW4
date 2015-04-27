@@ -130,7 +130,7 @@ class BerkeleyAligner():
                     e_word = e_sent[j - 1]
                     for i in range(0, l_g + 1):
                         g_word = g_sent[i]
-                        delta = t_eg[(e_word, f_word)] * q_eg[(i, j, l_e, l_g)] / normalizer[e_word]
+                        delta = t_eg[(e_word, g_word)] * q_eg[(i, j, l_e, l_g)] / normalizer[e_word]
                         c_eg[(e_word, g_word)] += delta
                         c_eg[g_word] += delta
                         c_eg[(i, j, l_e, l_g)] += delta
