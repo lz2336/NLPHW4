@@ -31,7 +31,7 @@ class BerkeleyAligner():
                 if p_max[1] is not None:
                     alignments.append((j, p_max[1]))
 
-                    return AlignedSent(german, english, alignments)
+        return AlignedSent(german, english, alignments)
 
 
     # TODO: Implement the EM algorithm. num_iters is the number of iterations. Returns the 
