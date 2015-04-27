@@ -38,6 +38,7 @@ class BerkeleyAligner():
         counts = {}
 
         for (target_sent, source_sent) in zip(target_sents, source_sents):
+            target_sent = [None] + target_sent
             for word in source_sent:
                 if word not in counts:
                     counts[word] = set(target_sent)
