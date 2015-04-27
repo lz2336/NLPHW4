@@ -51,7 +51,7 @@ class BerkeleyAligner():
                 if word not in counts:
                     counts[word] = set(target_sent[1:])
                 else:
-                    counts[word].update(target_sent[1:])
+                    counts[word].update(target_sent)
         
         for word, target_words in counts.iteritems():
             for target_word in target_words:
@@ -61,7 +61,7 @@ class BerkeleyAligner():
         for target_sent, source_sent in zip(target_sents, source_sents):  
             l = len(source_sent)
             m = len(target_sent)
-            init_prob = 1.0 / (m - 1)
+            init_prob = 1.0 / m
 
             for target_idx in range(0, m):
                 for source_idx in range(1, l): # skipping 'NULL' in source_sent
@@ -106,19 +106,17 @@ class BerkeleyAligner():
 
         # print t_eg
         # print q_eg
-        
+
+        c_eg = defaultdict(float)
+        c_ge = defaultdict(float)
+        # c_q_eg = defaultdict(float)
+        # c_q_ge = defaultdict(float)
+        normalizer = defaultdict(float)
+        # normalizer_ge = defaultdict(float)
 
         for s in range(0, num_iters):
-            c_eg = defaultdict(float)
-            c_ge = defaultdict(float)
-            # c_q_eg = defaultdict(float)
-            # c_q_ge = defaultdict(float)
-            normalizer = defaultdict(float)
-            # normalizer_ge = defaultdict(float)
-
-
             #Calculate counts for e2g:
-            for k in range(0, len(aligned_sents)):
+            for k in range(0, len(esents)):
                 source_sent = esents[k]
                 target_sent = gsents[k]
                 l = len(source_sent)
@@ -133,20 +131,21 @@ class BerkeleyAligner():
                         # print target_word
                         # print t_eg[(source_word, target_word)]
                         # print q_eg[(j, i, l, m)]
-                        normalizer[source_word] += t_eg[(source_word, target_word)] * q_eg[(j, i, l, m)]
+                        normalizer[source_word] += t_eg[(source_word, target_word)] * q_eg[(j, i, l-1, m-1)]
 
                 for i in range(1, l):
                     source_word = source_sent[i]
                     for j in range(0, m):
                         target_word = target_sent[j]
-                        delta = t_eg[(source_word, target_word)] * q_eg[(j, i, l, m)] / normalizer[source_word]
+                        delta = t_eg[(source_word, target_word)] * q_eg[(j, i, l-1, m-1)] / normalizer[source_word]
                         c_eg[(source_word, target_word)] += delta
                         c_eg[source_word] += delta
-                        c_eg[(j, i, l, m)] += delta
-                        c_eg[(i, l, m)] += delta
+                        c_eg[(j, i, l-1, m-1)] += delta
+                        c_eg[(i, l-1, m-1)] += delta
 
+        for s in range(0, num_iters):
             # Calculate counts for g2e:
-            for k in range(0, len(aligned_sents)):
+            for k in range(0, len(gsents)):
                 source_sent = gsents[k]
                 target_sent = esents[k]
                 l = len(source_sent)
@@ -178,27 +177,27 @@ class BerkeleyAligner():
 
                 for j in range(0, m):
                     target_word = target_sent[j]
-                    for i in range(0, l):
+                    for i in range(1, l):
                         source_word = source_sent[i]
                         # print source_word
                         # print target_word
-                        if i * j != 0:
-                            q_ge[(j, i, l, m)] = (c_ge[(j, i, l, m)] + c_eg[(i, j, m, l)]) / (c_ge[(i, l, m)] + c_eg[(j, m, l)])
-                            t_ge[(source_word, target_word)] = (c_ge[(source_word, target_word)] + c_eg[(target_word, source_word)]) / (c_ge[source_word] + c_eg[target_word])
-                            q_eg[(i, j, m, l)] = (c_ge[(j, i, l, m)] + c_eg[(i, j, m, l)]) / (c_ge[(i, l, m)] + c_eg[(j, m, l)])
-                            t_eg[(target_word, source_word)] = (c_ge[(source_word, target_word)] + c_eg[(target_word, source_word)]) / (c_ge[source_word] + c_eg[target_word])
-                        elif j == 0 and i != 0:
-                            q_ge[(j, i, l, m)] = c_ge[(j, i, l, m)] / c_ge[(i, l, m)]
-                            t_ge[(source_word, target_word)] = c_ge[(source_word, target_word)] / c_ge[source_word]
-                            q_eg[(i, j, m, l)] = (c_ge[(j, i, l, m)] + c_eg[(i, j, m, l)]) / (c_ge[(i, l, m)] + c_eg[(j, m, l)])
-                            t_eg[(target_word, source_word)] = (c_ge[(source_word, target_word)] + c_eg[(target_word, source_word)]) / (c_ge[source_word] + c_eg[target_word])
-                        elif j != 0 and i == 0:
-                            q_ge[(j, i, l, m)] = (c_ge[(j, i, l, m)] + c_eg[(i, j, m, l)]) / (c_ge[(i, l, m)] + c_eg[(j, m, l)])
-                            t_ge[(source_word, target_word)] = (c_ge[(source_word, target_word)] + c_eg[(target_word, source_word)]) / (c_ge[source_word] + c_eg[target_word])
-                            q_eg[(i, j, m, l)] = c_eg[(i, j, m, l)] / c_eg[(j, m, l)]
-                            t_eg[(target_word, source_word)] = c_eg[(target_word, source_word)] / c_eg[target_word]
-                        else:
-                            pass
+                        # if i * j != 0:
+                        q_ge[(j, i, l, m)] = (c_ge[(j, i, l, m)] + c_eg[(i, j, m, l)]) / (c_ge[(i, l, m)] + c_eg[(j, m, l)])
+                        t_ge[(source_word, target_word)] = (c_ge[(source_word, target_word)] + c_eg[(target_word, source_word)]) / (c_ge[source_word] + c_eg[target_word])
+                        #     q_eg[(i, j, m, l)] = (c_ge[(j, i, l, m)] + c_eg[(i, j, m, l)]) / (c_ge[(i, l, m)] + c_eg[(j, m, l)])
+                        #     t_eg[(target_word, source_word)] = (c_ge[(source_word, target_word)] + c_eg[(target_word, source_word)]) / (c_ge[source_word] + c_eg[target_word])
+                        # elif j == 0 and i != 0:
+                        #     q_ge[(j, i, l, m)] = c_ge[(j, i, l, m)] / c_ge[(i, l, m)]
+                        #     t_ge[(source_word, target_word)] = c_ge[(source_word, target_word)] / c_ge[source_word]
+                        #     q_eg[(i, j, m, l)] = (c_ge[(j, i, l, m)] + c_eg[(i, j, m, l)]) / (c_ge[(i, l, m)] + c_eg[(j, m, l)])
+                        #     t_eg[(target_word, source_word)] = (c_ge[(source_word, target_word)] + c_eg[(target_word, source_word)]) / (c_ge[source_word] + c_eg[target_word])
+                        # elif j != 0 and i == 0:
+                        #     q_ge[(j, i, l, m)] = (c_ge[(j, i, l, m)] + c_eg[(i, j, m, l)]) / (c_ge[(i, l, m)] + c_eg[(j, m, l)])
+                        #     t_ge[(source_word, target_word)] = (c_ge[(source_word, target_word)] + c_eg[(target_word, source_word)]) / (c_ge[source_word] + c_eg[target_word])
+                        #     q_eg[(i, j, m, l)] = c_eg[(i, j, m, l)] / c_eg[(j, m, l)]
+                        #     t_eg[(target_word, source_word)] = c_eg[(target_word, source_word)] / c_eg[target_word]
+                        # else:
+                        #     pass
         return (t_ge, q_ge)
 
     
