@@ -205,10 +205,10 @@ class BerkeleyAligner():
                 for j in range(1, l_g + 1):
                     g_word = g_sent[j - 1]
                     if (e_word, g_word) in t_eg:
-                        # t[(g_word, e_word)] = (c_eg[(e_word, g_word)] + c_ge[(g_word, e_word)]) / (c_eg[g_word] + c_ge[e_word])
-                        t[(g_word, e_word)] = (c_eg[(e_word, g_word)] + c_ge[(g_word, e_word)]) / (2 * c_ge[e_word])
-                        # q[(i, j, l_g, l_e)] = (c_eg[(j, i, l_e, l_g)] + c_ge[(i, j, l_g, l_e)]) / (c_eg[(i, l_e, l_g)] + c_ge[(j, l_g, l_e)])             
-                        q[(i, j, l_g, l_e)] = (c_eg[(j, i, l_e, l_g)] + c_ge[(i, j, l_g, l_e)]) / (2 * c_ge[(j, l_g, l_e)])
+                        t[(g_word, e_word)] = (c_eg[(e_word, g_word)] + c_ge[(g_word, e_word)]) / (c_eg[g_word] + c_ge[e_word])
+                        # t[(g_word, e_word)] = (c_eg[(e_word, g_word)] + c_ge[(g_word, e_word)]) / (2 * c_ge[e_word])
+                        q[(i, j, l_g, l_e)] = (c_eg[(j, i, l_e, l_g)] + c_ge[(i, j, l_g, l_e)]) / (c_eg[(i, l_e, l_g)] + c_ge[(j, l_g, l_e)])             
+                        # q[(i, j, l_g, l_e)] = (c_eg[(j, i, l_e, l_g)] + c_ge[(i, j, l_g, l_e)]) / (2 * c_ge[(j, l_g, l_e)])
                     else:
                         t[(g_word, e_word)] = t_ge[(g_word, e_word)]
                         q[(i, j, l_g, l_e)] = q_ge[(i, j, l_g, l_e)]
