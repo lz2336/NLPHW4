@@ -40,6 +40,8 @@ class BerkeleyAligner():
         t = {}
 
         for (target_sent, source_sent) in zip(target_sents, source_sents):
+            print target_sent
+            print source_sent
             all_source_words += source_sent.remove('NULL')
             
             # Initialize q. l: length of source sent; m: length of target sent
