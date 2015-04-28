@@ -83,8 +83,6 @@ class BerkeleyAligner():
     def train(self, aligned_sents, num_iters):
         gsents = []
         esents = []
-        g_vocab = set()
-        e_vocab = set()
         # gsents_N =[]
         # esents_N = []
         for aligned_sent in aligned_sents:
@@ -94,11 +92,8 @@ class BerkeleyAligner():
             gsents.append(aligned_sent.words)
             # esents.append(aligned_sent.mots)
             esents.append(aligned_sent.mots)
-            g_vocab.update(aligned_sent.words)
-            e_vocab.update(aligned_sent.mots)
 
         # Initialize t_eg, q_eg, t_ge, q_ge
-        # Only t_eg and q_eg are returned
 
         (t_eg,q_eg) = self.initialize(gsents, esents)
         (t_ge,q_ge) = self.initialize(esents, gsents)
@@ -120,9 +115,6 @@ class BerkeleyAligner():
                     normalizer[e_word] = 0
                     for i in range(0, l_g + 1):
                         g_word = g_sent[i]
-                        # print target_word
-                        # print t_eg[(source_word, target_word)]
-                        # print q_eg[(j, i, l, m)]
                         normalizer[e_word] += t_eg[(e_word, g_word)] * q_eg[(i, j, l_e, l_g)]
 
                 # Counts

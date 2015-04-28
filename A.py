@@ -3,7 +3,7 @@ import codecs
 # from nltk.corpus import comtrans
 from nltk.align import ibm1, ibm2
 
-NUM_ITERS = 7
+NUM_ITERS = 10
 
 # TODO: Initialize IBM Model 1 and return the model.
 def create_ibm1(aligned_sents):
@@ -27,6 +27,12 @@ def compute_avg_aer(aligned_sents, model, n):
         curr_sent = aligned_sents[i]
         aligned_curr_sent = model.align(curr_sent)
         curr_er = curr_sent.alignment_error_rate(aligned_curr_sent)
+        print ' '.join(aligned_curr_sent.words)
+        print '\n'
+        print ' '.join(aligned_curr_sent.mots)
+        print '\n'
+        print aligned_curr_sent.alignment
+        
         er += curr_er
 
     avg_er = float(er) / n
