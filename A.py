@@ -45,10 +45,10 @@ def save_model_output(aligned_sents, model, file_name):
     for curr_sent in aligned_sents:
         aligned_curr_sent = model.align(curr_sent)
 
-        source = ' '.join(aligned_curr_sent.words)
-        target = ' '.join(aligned_curr_sent.mots)
-        alignments = ' '.join(str(alignm) for alignm in aligned_curr_sent.alignment)
-        output = 'Source sentence\t' + source + '\nTarget sentence\t' + target + '\nAlignments\t' + alignments + '\n\n'
+        source = aligned_curr_sent.words
+        target = aligned_curr_sent.mots
+        alignments = aligned_curr_sent.alignment
+        output = source + '\n' + target + '\n' + alignments + '\n\n'
         # print aligned_curr_sent.alignment
         # print curr_sent.alignment_error_rate(aligned_curr_sent)
 
