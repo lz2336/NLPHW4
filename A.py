@@ -2,6 +2,7 @@ import nltk
 import codecs
 # from nltk.corpus import comtrans
 from nltk.align import ibm1, ibm2
+import sys
 
 NUM_ITERS = 10
 
@@ -32,7 +33,7 @@ def compute_avg_aer(aligned_sents, model, n):
         print ' '.join(aligned_curr_sent.mots)
         print '\n'
         print aligned_curr_sent.alignment
-        
+
         er += curr_er
 
     avg_er = float(er) / n
@@ -68,6 +69,8 @@ def main(aligned_sents):
     print ('IBM Model 1')
     print ('---------------------------')
     print('Average AER: {0:.3f}\n'.format(avg_aer))
+
+    sys.exit(1)
 
     ibm2 = create_ibm2(aligned_sents)
     save_model_output(aligned_sents, ibm2, "ibm2.txt")
