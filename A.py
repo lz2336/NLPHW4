@@ -57,18 +57,18 @@ def save_model_output(aligned_sents, model, file_name):
     output_file.close()
 
 def main(aligned_sents):
-    ibm1 = create_ibm1(aligned_sents)
-    save_model_output(aligned_sents, ibm1, "ibm1.txt")
-    avg_aer = compute_avg_aer(aligned_sents, ibm1, 50)
+    # ibm1 = create_ibm1(aligned_sents)
+    # save_model_output(aligned_sents, ibm1, "ibm1.txt")
+    # avg_aer = compute_avg_aer(aligned_sents, ibm1, 50)
 
-    print ('IBM Model 1')
-    print ('---------------------------')
-    print('Average AER: {0:.3f}\n'.format(avg_aer))
-
-    # ibm2 = create_ibm2(aligned_sents)
-    # save_model_output(aligned_sents, ibm2, "ibm2.txt")
-    # avg_aer = compute_avg_aer(aligned_sents, ibm2, 50)
-    
-    # print ('IBM Model 2')
+    # print ('IBM Model 1')
     # print ('---------------------------')
     # print('Average AER: {0:.3f}\n'.format(avg_aer))
+
+    ibm2 = create_ibm2(aligned_sents)
+    save_model_output(aligned_sents, ibm2, "ibm2.txt")
+    avg_aer = compute_avg_aer(aligned_sents, ibm2, 50)
+    
+    print ('IBM Model 2')
+    print ('---------------------------')
+    print('Average AER: {0:.3f}\n'.format(avg_aer))
