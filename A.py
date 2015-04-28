@@ -47,7 +47,7 @@ def save_model_output(aligned_sents, model, file_name):
 
         source = aligned_curr_sent.words
         target = aligned_curr_sent.mots
-        alignments = aligned_curr_sent.alignment)
+        alignments = aligned_curr_sent.alignment
         output = str(source) + '\n' + str(target) + '\n' + str(alignments) + '\n\n'
         # print aligned_curr_sent.alignment
         # print curr_sent.alignment_error_rate(aligned_curr_sent)
