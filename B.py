@@ -41,6 +41,7 @@ class BerkeleyAligner():
         t = defaultdict(float)
         counts = defaultdict(set)
 
+        # Initialize t
         for (target_sent, source_sent) in zip(target_sents, source_sents):
             target_sent = [None] + target_sent
             for src_word in source_sent:
@@ -61,21 +62,6 @@ class BerkeleyAligner():
             for i in range(0, l_tar + 1):
                 for j in range(1, l_src + 1):
                     q[(i, j, l_src, l_tar)] += init_prob
-
-        # # Initialize t
-        # t = {}
-        # all_source_words = set(all_source_words)
-
-        # for word in all_source_words:
-        #     possible_translations = []
-        #     for (target_sent, source_sent) in zip(target_sents, source_sents):
-        #         if word in source_sent:
-        #             possible_translations += target_sent # including 'NULL' in target_sent
-
-        #     possible_translations = set(possible_translations)
-        #     count = len(possible_translations)
-        #     for possible_translation in possible_translations:
-        #         t[(word, possible_translation)] = 1.0 / count
 
         return (t,q)
 
@@ -98,11 +84,11 @@ class BerkeleyAligner():
         (t_eg,q_eg) = self.initialize(gsents, esents)
         (t_ge,q_ge) = self.initialize(esents, gsents)
 
+        #Calculate counts for e2g:
         for s in range(0, num_iters):
             c_eg = defaultdict(float)
             normalizer = defaultdict(float)
 
-            #Calculate counts for e2g:
             for k in range(0, len(esents)):
                 e_sent = esents[k]
                 g_sent = [None] + gsents[k]
@@ -171,7 +157,7 @@ class BerkeleyAligner():
                         c_ge[(i, j, l_g, l_e)] += delta
                         c_ge[(j, l_g, l_e)] += delta
 
-            #Update t_ge, q_ge values
+            # Update t_ge, q_ge values
             for (g_sent, e_sent) in zip(gsents, esents):
                 e_sent = [None] + e_sent
                 l_g = len(g_sent)
