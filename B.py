@@ -69,14 +69,8 @@ class BerkeleyAligner():
     def train(self, aligned_sents, num_iters):
         gsents = []
         esents = []
-        # gsents_N =[]
-        # esents_N = []
         for aligned_sent in aligned_sents:
-            # gsent = [None] + aligned_sent.words
-            # esent = [None] + aligned_sent.mots
-            # gsents.append(aligned_sent.words)
             gsents.append(aligned_sent.words)
-            # esents.append(aligned_sent.mots)
             esents.append(aligned_sent.mots)
 
         # Initialize t_eg, q_eg, t_ge, q_ge
@@ -184,9 +178,7 @@ class BerkeleyAligner():
                     g_word = g_sent[j - 1]
                     if (e_word, g_word) in t_eg:
                         t[(g_word, e_word)] = (c_eg[(e_word, g_word)] + c_ge[(g_word, e_word)]) / (c_eg[g_word] + c_ge[e_word])
-                        # t[(g_word, e_word)] = (c_eg[(e_word, g_word)] + c_ge[(g_word, e_word)]) / (2 * c_ge[e_word])
                         q[(i, j, l_g, l_e)] = (c_eg[(j, i, l_e, l_g)] + c_ge[(i, j, l_g, l_e)]) / (c_eg[(i, l_e, l_g)] + c_ge[(j, l_g, l_e)])             
-                        # q[(i, j, l_g, l_e)] = (c_eg[(j, i, l_e, l_g)] + c_ge[(i, j, l_g, l_e)]) / (2 * c_ge[(j, l_g, l_e)])
                     else:
                         t[(g_word, e_word)] = t_ge[(g_word, e_word)]
                         q[(i, j, l_g, l_e)] = q_ge[(i, j, l_g, l_e)]
